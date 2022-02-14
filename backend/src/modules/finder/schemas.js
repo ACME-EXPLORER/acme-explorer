@@ -4,8 +4,19 @@ const { Schema } = mongoose;
 export default {
   Finder: new Schema(
     {
-      name: String,
+      keyword: {
+        type: String,
+        required: true,
+      },
+      minPrice: {
+        type: Number,
+        required: true,
+      },
+      createdAt: Number,
+      updatedAt: Number,
     },
-    { timestamps: true }
+    {
+      timestamps: { currentTime: () => moment().unix() },
+    }
   ),
 };
