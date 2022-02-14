@@ -8,9 +8,18 @@ import swaggerJsdoc from 'swagger-jsdoc';
 import { createClient } from 'redis';
 import { StatusCodes } from 'http-status-codes';
 import { Auth } from './authorization';
-import { InvalidToken, ExpiredToken, UserForbidden } from './exceptions';
+import { ExpiredToken, InvalidToken, UserForbidden } from './errors/exceptions';
 
 class App {
+  server: any;
+  apps: any;
+  env: any;
+  logger: any;
+  router: any;
+  storage: any;
+  redis: any;
+  instance: any;
+
   constructor({ server, apps, env, logger, router, storage, redis }) {
     this.server = server;
     this.apps = apps;
@@ -44,8 +53,13 @@ class App {
     });
   }
 
-  async start(params = {}) {
-    params.views = params.views ?? this.getAllViews();
+  async start() {
+    const params = {
+      views: this.getAllViews(),
+      subscriptions: {},
+    };
+
+    // params.views = params.views ?? this.getAllViews();
 
     try {
       await this._loadDependencies(params);
@@ -118,11 +132,15 @@ class App {
 }
 
 class RouteManager {
+  server: any;
+  base: string;
+  version: string;
+  url: string;
   constructor(server) {
     this.server = server;
     this.base = '/api';
     this.version = 'v1';
-    this.url = this.getBaseRoute();
+    this.url = this.getBaseRoute(this.version);
   }
 
   load(views) {
@@ -173,10 +191,10 @@ class RouteManager {
           const valid = await Auth.verify(token);
           this.server.locals.user = valid;
           if (roles) {
-            return (Array.isArray(roles) && roles.includes(valid.role)) ||
+            return (Array.isArray(roles) && roles.includes(valid['role'])) ||
               (typeof roles === 'object' &&
                 method in roles &&
-                roles[method].includes(valid.role))
+                roles[method].includes(valid['role']))
               ? next()
               : next(new UserForbidden());
           } else {
@@ -213,20 +231,20 @@ class RouteManager {
 
   _loadParentView(view) {
     const self = this;
-    const router = new Router({ mergeParams: true });
+    const router = Router({ mergeParams: true });
     if ('methods' in view) {
       this._loadRouteMethods(router, { ...view, url: '/' });
     }
 
     if ('children' in view) {
       Object.entries(view.children).forEach(([key, value]) => {
-        if ('methods' in value) {
+        if (value.hasOwnProperty('methods')) {
           this._loadRouteMethods(router, value);
         }
 
-        if ('children' in value) {
-          Object.entries(value.children).forEach(([$key, $value]) => {
-            const path = `${value.url}${$value.url}`;
+        if (value.hasOwnProperty('children')) {
+          Object.entries(value['children']).forEach(([$key, $value]) => {
+            const path = `${value['url']}${$value['url']}`;
             router.use(path, self._loadParentView($value));
           });
         }
@@ -246,6 +264,8 @@ class RouteManager {
 }
 
 class StorageManager {
+  env: any;
+  source: any;
   constructor({ source, env }) {
     this.env = env;
     this.source = source;
@@ -261,6 +281,10 @@ class StorageManager {
 }
 
 class RedisManager {
+  env: any;
+  redis: any;
+  subscriptions: any[];
+  isTest: boolean;
   constructor({ env, redis }) {
     this.env = env;
     this.redis = redis;
