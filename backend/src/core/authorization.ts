@@ -1,15 +1,15 @@
 import jwt from 'jsonwebtoken';
 
 class Authorization {
-  getSecret () {
-    return process.env.SECRET;
+  getSecret(): string {
+    return process.env.SECRET || '';
   }
 
-  sign (payload) {
+  sign(payload: string) {
     return jwt.sign(payload, this.getSecret());
   }
 
-  verify (token) {
+  verify(token: string) {
     return jwt.verify(token, this.getSecret());
   }
 }
