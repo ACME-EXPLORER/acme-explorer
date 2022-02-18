@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import moment from "moment";
 const { Schema } = mongoose;
 
 export default {
@@ -14,7 +15,11 @@ export default {
       comment: String,
       rejectedReason: String,
       isPaid: { type: Boolean, default: false },
+      createdAt: Number,
+      updatedAt: Number,
     },
-    { timestamps: true }
+    {
+      timestamps: { currentTime: () => moment().unix() },
+    }
   ),
 };
