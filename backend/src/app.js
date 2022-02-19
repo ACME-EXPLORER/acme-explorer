@@ -1,50 +1,36 @@
-import { App as BaseApp } from './core/app.js';
+// import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import { Server } from './config/server.js';
+// import bodyParser from 'body-parser';
+// import express from 'express';
 
-class App extends BaseApp {
-  getSwaggerOptions() {
-    return {
-      name: 'acme-explorer',
-      swaggerDefinition: {
-        openapi: '3.0.1',
-        info: {
-          title: `${this.getAppName()} backend API`,
-          version: this.env.npm_package_version,
-          description: 'Manage custom trips for explorers. Provides all API logic to support the system transactions',
-          license: {
-            name: 'MIT',
-            url: 'https://github.com/acme-explorer/acme-explorer/blob/main/LICENSE'
-          },
-          contact: {
-            name: 'AcmeExplorer',
-            url: 'https://github.com/acme-explorer/',
-            email: 'six.aps@gmail.com'
-          }
-        },
-        servers: [
-          {
-            url: this.router.getBaseRoute()
-          }
-        ],
-        components: {
-          securitySchemes: {
-            jwt: {
-              type: 'http',
-              scheme: 'bearer',
-              in: 'header',
-              bearerFormat: 'JWT'
-            }
-          },
-          schemas: this.getAllSwagger()
-        },
-        security: [
-          {
-            jwt: []
-          }
-        ]
-      },
-      apis: ['./**/views.js']
-    };
-  }
-}
+dotenv.config();
 
-export default App;
+const server = new Server();
+
+server.execute();
+
+// const app = express();
+// const port = process.env.PORT || 8080;
+
+// app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.json());
+
+// MongoDB URI building
+// const mongoDBHostname = process.env.mongoDBHostname || 'localhost';
+// const mongoDBPort = process.env.mongoDBPort || '27017';
+// const mongoDBName = process.env.mongoDBName || 'ACME-Explorer';
+// const mongoDBURI = 'mongodb://' + mongoDBHostname + ':' + mongoDBPort + '/' + mongoDBName;
+
+// mongoose.connect(mongoDBURI);
+// console.log('Connecting DB to: ' + mongoDBURI);
+
+// mongoose.connection.on('open', () => {
+//   app.listen(port, () => {
+//     console.log('ACME-Market RESTful API server started on: ' + port);
+//   });
+// });
+
+// mongoose.connection.on('error', (err) => {
+//   console.error('DB init error ' + err);
+// });
