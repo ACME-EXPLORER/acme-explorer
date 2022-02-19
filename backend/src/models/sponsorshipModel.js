@@ -1,4 +1,7 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
+import moment from 'moment';
+
+const { Schema } = mongoose;
 
 const SponsorshipSchema = new Schema(
   {
