@@ -1,6 +1,6 @@
 {
   "name": "acme-explorer-backend",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Acme explorer backend to mange custom trips for explorers",
   "main": "src/app.js",
   "type": "module",
