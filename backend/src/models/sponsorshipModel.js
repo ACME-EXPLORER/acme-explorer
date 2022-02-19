@@ -26,4 +26,4 @@ const SponsorshipSchema = new Schema(
   }
 );
 
-module.exports = mongoose.model('Sponsorships', SponsorshipSchema);
+export const sponsorshipModel = mongoose.model('Sponsorships', SponsorshipSchema);

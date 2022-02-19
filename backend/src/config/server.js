@@ -4,6 +4,7 @@ import { dbConnection } from '../database/config.js';
 import { actorRoutes } from '../routes/actorRoutes.js';
 import { finderRoutes } from '../routes/finderRoutes.js';
 import { applicationRoutes } from '../routes/applicationRoutes.js';
+import { sponsorshipRoutes } from '../routes/sponsorshipRoutes.js';
 
 export class Server {
   constructor() {
@@ -22,6 +23,7 @@ export class Server {
     actorRoutes(this.app);
     finderRoutes(this.app);
     applicationRoutes(this.app);
+    sponsorshipRoutes(this.app);
   }
 
   execute() {

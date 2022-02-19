@@ -25,7 +25,6 @@ export const create_an_actor = (req, res) => {
 
   newActor.save((err, actor) => {
     if (err) {
-      console.log(err);
       if (err.name === 'ValidationError') {
         res.status(422).send(err);
       } else {
