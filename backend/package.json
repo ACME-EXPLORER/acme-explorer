@@ -47,13 +47,5 @@
   },
   "jest": {
     "transform": {}
-  },
-  "semistandard": {
-    "env": [
-      "jest"
-    ],
-    "ignore": [
-      "src/app.js"
-    ]
   }
 }
