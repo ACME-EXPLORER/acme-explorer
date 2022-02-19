@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import { actorModel } from '../models/actorModel.js';
 
 export const find_all_actors = (req, res) => {

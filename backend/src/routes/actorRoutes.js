@@ -6,7 +6,7 @@ import {
   delete_an_actor
 } from '../controllers/actorController.js';
 
-export const routesActors = (app) => {
+export const actorRoutes = (app) => {
   /**
    * Post an actor
    *    RequiredRoles: None

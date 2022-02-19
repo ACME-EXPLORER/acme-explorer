@@ -35,4 +35,4 @@ const FinderSchema = new Schema(
 
 FinderSchema.index({ keyword: 'text' });
 
-module.exports = mongoose.model('Finders', FinderSchema);
+export const finderModel = mongoose.model('Finders', FinderSchema);

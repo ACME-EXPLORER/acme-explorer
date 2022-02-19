@@ -1,7 +1,8 @@
 import bodyParser from 'body-parser';
 import express from 'express';
 import { dbConnection } from '../database/config.js';
-import { routesActors } from '../routes/actorRoutes.js';
+import { actorRoutes } from '../routes/actorRoutes.js';
+import { finderRoutes } from '../routes/finderRoutes.js';
 
 export class Server {
   constructor() {
@@ -17,7 +18,8 @@ export class Server {
     this.app.use(bodyParser.json());
 
     // End Points
-    routesActors(this.app);
+    actorRoutes(this.app);
+    finderRoutes(this.app);
   }
 
   execute() {
