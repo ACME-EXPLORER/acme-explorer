@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import moment from "moment";
+import mongoose from 'mongoose';
+import moment from 'moment';
 const { Schema } = mongoose;
 
 export default {
@@ -11,10 +11,10 @@ export default {
       startDate: Number,
       endDate: Number,
       createdAt: Number,
-      updatedAt: Number,
+      updatedAt: Number
     },
     {
-      timestamps: { currentTime: () => moment().unix() },
+      timestamps: { currentTime: () => moment().unix() }
     }
-  ),
+  )
 };

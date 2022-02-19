@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import Schemas from './schemas.js';
 
 class ApplicationModel {
-  toClient () {
+  toClient() {
     return {
       id: this._id,
       explorer: this.explorer,

@@ -4,12 +4,12 @@ import Constants from './constants.js';
 import { SelectedNameUnavailable, PasswordLengthToShort, UnmatchedPassword } from './exceptions.js';
 
 class ActorModel {
-  static async new ({ password, password_confirm: passwordConfirm, ...payload }) {
+  static async new({ password, password_confirm: passwordConfirm, ...payload }) {
     const user = new Actor(payload);
     return user.save();
   }
 
-  static async validate (form) {
+  static async validate(form) {
     if (form.email != null) {
       const existingUser = await Actor.findOne({ email: form.email });
       if (existingUser && existingUser.toClient().email === form.email) {
@@ -26,15 +26,15 @@ class ActorModel {
     }
   }
 
-  isAdmin () {
+  isAdmin() {
     return this.role === 'admin';
   }
 
-  isActive () {
+  isActive() {
     return this.state === 'active';
   }
 
-  toClient () {
+  toClient() {
     return {
       id: this._id,
       name: this.name,

@@ -1,11 +1,11 @@
 import SendGridMailer from '@sendgrid/mail';
 
 class NodeMailer {
-  constructor (mailer, options = {}) {
+  constructor(mailer, options = {}) {
     this.mailer = mailer ?? SendGridMailer;
   }
 
-  send ({ email, subject, text }) {
+  send({ email, subject, text }) {
     if (process.env.NODE_ENV !== 'test') {
       this.mailer.setApiKey(process.env.SENDGRID_API_KEY);
       const mailOptions = {

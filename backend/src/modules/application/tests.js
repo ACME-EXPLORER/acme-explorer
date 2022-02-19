@@ -25,9 +25,6 @@ describe('Application API endpoints', () => {
   });
 });
 
-const initTestDatabase = async () => {
-};
+const initTestDatabase = async () => {};
 
-const cleanTestDatabase = async () => {
-
-};
+const cleanTestDatabase = async () => {};

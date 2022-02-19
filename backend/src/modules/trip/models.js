@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import Schemas from './schemas.js';
 
 class TripModel {
-  toClient () {
+  toClient() {
     return {
       id: this.id,
       ticker: this.ticker,

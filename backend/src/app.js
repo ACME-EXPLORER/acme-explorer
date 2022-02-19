@@ -1,7 +1,7 @@
 import { App as BaseApp } from './core/app.js';
 
 class App extends BaseApp {
-  getSwaggerOptions () {
+  getSwaggerOptions() {
     return {
       name: 'acme-explorer',
       swaggerDefinition: {
@@ -20,9 +20,11 @@ class App extends BaseApp {
             email: 'six.aps@gmail.com'
           }
         },
-        servers: [{
-          url: this.router.getBaseRoute()
-        }],
+        servers: [
+          {
+            url: this.router.getBaseRoute()
+          }
+        ],
         components: {
           securitySchemes: {
             jwt: {
@@ -34,9 +36,11 @@ class App extends BaseApp {
           },
           schemas: this.getAllSwagger()
         },
-        security: [{
-          jwt: []
-        }]
+        security: [
+          {
+            jwt: []
+          }
+        ]
       },
       apis: ['./**/views.js']
     };
