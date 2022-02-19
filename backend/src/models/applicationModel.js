@@ -23,4 +23,4 @@ const ApplicationSchema = new Schema(
   }
 );
 
-module.exports = mongoose.model('Finders', ApplicationSchema);
+export const applicationModel = mongoose.model('Applications', ApplicationSchema);

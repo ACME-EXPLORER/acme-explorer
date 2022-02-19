@@ -3,6 +3,7 @@ import express from 'express';
 import { dbConnection } from '../database/config.js';
 import { actorRoutes } from '../routes/actorRoutes.js';
 import { finderRoutes } from '../routes/finderRoutes.js';
+import { applicationRoutes } from '../routes/applicationRoutes.js';
 
 export class Server {
   constructor() {
@@ -20,6 +21,7 @@ export class Server {
     // End Points
     actorRoutes(this.app);
     finderRoutes(this.app);
+    applicationRoutes(this.app);
   }
 
   execute() {
