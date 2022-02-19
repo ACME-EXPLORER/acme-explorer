@@ -1,4 +1,7 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
+import moment from 'moment';
+
+const { Schema } = mongoose;
 
 const ActorSchema = new Schema(
   {
@@ -18,7 +21,6 @@ const ActorSchema = new Schema(
     },
     preferredLanguage: {
       type: String,
-      required: 'Please select the preferred language',
       enum: ['en', 'es'],
       default: 'es'
     },
@@ -29,7 +31,6 @@ const ActorSchema = new Schema(
     },
     state: {
       type: String,
-      required: 'You need to provide a state',
       enum: ['active', 'inactive'],
       default: 'active'
     },
@@ -41,4 +42,4 @@ const ActorSchema = new Schema(
   }
 );
 
-module.exports = mongoose.model('Actors', ActorSchema);
+export const actorModel = mongoose.model('Actors', ActorSchema);

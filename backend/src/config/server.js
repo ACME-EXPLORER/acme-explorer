@@ -1,6 +1,7 @@
 import bodyParser from 'body-parser';
 import express from 'express';
 import { dbConnection } from '../database/config.js';
+import { routesActors } from '../routes/actorRoutes.js';
 
 export class Server {
   constructor() {
@@ -16,6 +17,7 @@ export class Server {
     this.app.use(bodyParser.json());
 
     // End Points
+    routesActors(this.app);
   }
 
   execute() {
