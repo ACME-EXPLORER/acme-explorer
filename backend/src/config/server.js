@@ -5,6 +5,7 @@ import { actorRoutes } from '../routes/actorRoutes.js';
 import { finderRoutes } from '../routes/finderRoutes.js';
 import { applicationRoutes } from '../routes/applicationRoutes.js';
 import { sponsorshipRoutes } from '../routes/sponsorshipRoutes.js';
+import { tripRoutes } from '../routes/tripRoutes.js';
 
 export class Server {
   constructor() {
@@ -24,6 +25,7 @@ export class Server {
     finderRoutes(this.app);
     applicationRoutes(this.app);
     sponsorshipRoutes(this.app);
+    tripRoutes(this.app);
   }
 
   execute() {

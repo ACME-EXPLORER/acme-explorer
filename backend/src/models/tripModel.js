@@ -47,4 +47,4 @@ TripSchema.pre('save', (callback) => {
   callback();
 });
 
-module.exports = mongoose.model('Trips', TripSchema);
+export const tripModel = mongoose.model('Trips', TripSchema);
