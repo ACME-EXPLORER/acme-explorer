@@ -1,6 +1,6 @@
 import { Actor } from './models.js';
 import { StatusCodes } from 'http-status-codes';
-import { BaseError, RecordNotFound, UserForbidden } from '../../core/exceptions.js';
+import { BaseError, RecordNotFound, UserForbidden } from '../../shared/exceptions.js';
 
 export default [
   {

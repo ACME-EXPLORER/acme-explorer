@@ -2,12 +2,12 @@
   "name": "acme-explorer-backend",
   "version": "1.0.0",
   "description": "Acme explorer backend to mange custom trips for explorers",
-  "main": "src/index.js",
+  "main": "src/app.js",
   "type": "module",
   "author": "acme-explorer",
   "license": "MIT",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "node src/app.js",
     "dev": "nodemon",
     "format": "prettier --write \"src/**/*.js\"",
     "lint": "eslint \"{src,apps,libs,test}/**/*.js\" --fix",
@@ -33,6 +33,7 @@
     "swagger-ui-express": "^4.3.0"
   },
   "devDependencies": {
+    "@babel/eslint-parser": "^7.17.0",
     "babel-eslint": "10.1.0",
     "cross-env": "^7.0.3",
     "eslint": "8.9.0",
@@ -41,7 +42,6 @@
     "jest": "^27.4.3",
     "pre-commit": "^1.2.2",
     "prettier": "2.5.1",
-    "semistandard": "^16.0.1",
     "supertest": "^6.1.6"
   },
   "jest": {
@@ -52,7 +52,7 @@
       "jest"
     ],
     "ignore": [
-      "src/index.js"
+      "src/app.js"
     ]
   }
 }

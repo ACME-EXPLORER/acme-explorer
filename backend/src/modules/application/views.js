@@ -1,5 +1,5 @@
 import { Application } from './models.js';
-import { RecordNotFound } from '../../core/exceptions.js';
+import { RecordNotFound } from '../../shared/exceptions.js';
 import { StatusCodes } from 'http-status-codes';
 
 export default [

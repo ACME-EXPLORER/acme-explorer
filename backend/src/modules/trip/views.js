@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 import { Trip } from './models.js';
-import { RecordNotFound } from '../../core/exceptions.js';
+import { RecordNotFound } from '../../shared/exceptions.js';
 import Constants from './constants.js';
 
 export default [

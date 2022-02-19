@@ -1,4 +1,4 @@
-import { BaseError } from '../../core/index.js';
+import { BaseError } from '../../shared/index.js';
 import Constants from './constants.js';
 
 export class SelectedNameUnavailable extends BaseError {
