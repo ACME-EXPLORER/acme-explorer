@@ -16,8 +16,8 @@ export function ProfileModal ({ user, showProfileModal, toggleProfileModal }) {
         id: user?.id,
         firstname: user?.firstname ?? '',
         lastname: user?.lastname ?? '',
-        phone: user?.info.phone ?? '',
-        address: user?.info.address ?? ''
+        phone: user?.info?.phone ?? '',
+        address: user?.info?.address ?? ''
       },
       error: {}
     }

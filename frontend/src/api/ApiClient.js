@@ -2,7 +2,7 @@ import axios from 'axios';
 import queryString from 'query-string';
 
 export default class ApiClient {
-  constructor ({ prefix = 'api/v1', extraHeaders = {} } = {}) {
+  constructor ({ prefix = 'v1', extraHeaders = {} } = {}) {
     this.prefix = prefix;
     this.extraHeaders = { ...extraHeaders };
   }

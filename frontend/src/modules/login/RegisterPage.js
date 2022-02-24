@@ -16,7 +16,6 @@ export function RegisterPage () {
       model: {
         firstname: '',
         lastname: '',
-        username: '',
         email: '',
         password: '',
         password_confirm: '',
@@ -36,14 +35,14 @@ export function RegisterPage () {
             alt='Logo'
           />
           <form className='form' name='signup'>
-            <FieldGroup
-              id='username'
-              name='username'
-              type='text'
-              placeholder='usuario'
-              required autoFocus
+          <FieldGroup
+              id='email'
+              name='email'
+              type='email'
+              placeholder='correo@email.com'
+              required
               onChange={onInputChange}
-              help={state.error.username}
+              help={state.error.email}
             />
             <FieldGroup
               id='password'
@@ -66,15 +65,6 @@ export function RegisterPage () {
               min='6'
               onChange={onInputChange}
               help={state.error.password_confirm}
-            />
-            <FieldGroup
-              id='email'
-              name='email'
-              type='email'
-              placeholder='correo@email.com'
-              required
-              onChange={onInputChange}
-              help={state.error.email}
             />
             <FieldGroup
               id='firstname'

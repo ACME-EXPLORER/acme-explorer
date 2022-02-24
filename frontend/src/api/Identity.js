@@ -1,4 +1,5 @@
 import Base from './Base';
+import { auth } from "../helpers/firebase";
 
 class IdentityAPI extends Base {
   constructor (params) {
@@ -6,32 +7,41 @@ class IdentityAPI extends Base {
     this.base = 'actors';
   }
 
-  login (payload) {
-    return this.apiClient.post(`${this.base}/login`, payload);
+  async login (payload) {
+    const { user } = await auth.signInWithEmailAndPassword(payload.email, payload.password);
+    if (!user.emailVerified) {
+      await this.logout();
+      throw new Error('El email no está confirmado.');
+    }
+
+    return user.toJSON();
   }
 
   logout () {
-    return this.apiClient.post(`${this.base}/logout`);
+    return auth.signOut();
   }
 
-  signup (payload) {
-    return this.apiClient.post(`${this.base}/register`, payload);
-  }
-
-  confirmUser (payload) {
-    return this.apiClient.post(`${this.base}/confirm`, payload);
+  async signup (payload) {
+    const { user } = await auth.createUserWithEmailAndPassword(payload.email, payload.password);
+    if (!user.emailVerified){
+    	await user.sendEmailVerification();
+    }
   }
 
   forgotPassword (email) {
-    return this.apiClient.post(`${this.base}/forgotPassword`, { email });
+    return auth.sendPasswordResetEmail(email);
   }
 
-  restorePassword (payload) {
-    return this.apiClient.post(`${this.base}/restore`, payload);
-  }
+  async me () {
+     if(!auth.currentUser.isAnonymous){
+     	const existingToken = localStorage.getItem('token');
+     	const token = await auth.currentUser.getIdToken();
+     	if(existingToken !== token){
+            localStorage.setItem('token', token);
+        }
+     }
 
-  me () {
-    return this.apiClient.get(`${this.base}/me`);
+     return auth.currentUser.toJSON();
   }
 }
 
