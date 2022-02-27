@@ -22,8 +22,22 @@ export const find_trip = (req, res) => {
 };
 
 export const create_trip = (req, res) => {
+  console.log(Date() + ' - POST /trips');
   // TODO: Check credentials (manager)
-  const newTrip = new tripModel(req.body);
+
+  var trip = {
+    title: req.body.title,
+    description: req.body.description,
+    requirements: req.body.requirements,
+    startDate: req.body.startDate,
+    endDate: req.body.endDate,
+    pictures: req.body.pictures,
+    state: req.body.state,
+    reasonCancelled: req.body.reasonCancelled,
+    stages: req.body.stages
+  }
+
+  const newTrip = new tripModel(trip);
 
   newTrip.save((err, trip) => {
     if (err) {
@@ -33,7 +47,7 @@ export const create_trip = (req, res) => {
         res.status(500).send(err);
       }
     } else {
-      res.json(trip);
+      res.status(201).json(trip.cleanup());
     }
   });
 };

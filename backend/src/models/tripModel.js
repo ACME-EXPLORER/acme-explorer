@@ -43,12 +43,12 @@ const State = [
     ticker: {
       type: String,
       unique: true,
-      // validate: {
-      //   validator: function(v) {
-      //     return /^\d{6}-[A-Z]{4}$/.test(v);
-      //   },
-      //   message: 'ticker is not valid, Pattern is: "220527-ABCD"'
-      // }
+      validate: {
+        validator: function(v) {
+          return /^\d{6}-[A-Z]{4}$/.test(v);
+        },
+        message: 'ticker is not valid, Pattern is: "220527-ABCD"'
+      }
     },
     title: {
       type: String,
@@ -99,17 +99,43 @@ const State = [
     reasonCancelled: {
       type: String
     },
-    stages: [{  // TODO: MinSize = 1
-      type: Schema.Types.ObjectId,
-      ref: 'Stage'
-    }],
+    stages: {
+      type: [StageSchema],
+      validate: {
+        validator: function(v) {
+          return v.length > 0;
+        },
+        message: 'At least one stage is required'
+      }
+    },
     manager: {
       // TODO: It must belong to an actor of type manager
       type: Schema.Types.ObjectId
     }
   });
 
+// Indexes
 TripSchema.index({ ticker: 'text', title: 'text', description: 'text' });
+
+// Cleanup method
+TripSchema.methods.cleanup = function() {
+  return {
+    id: this._id,
+    ticker: this.ticker,
+    title: this.title,
+    description: this.description,
+    price: this.price,
+    requirements: this.requirements,
+    startDate: dateFormat(this.startDate, 'dd/mm/yyyy'),
+    endDate: dateFormat(this.endDate, 'dd/mm/yyyy'),
+    pictures: this.pictures,
+    state: this.state,
+    reasonCancelled: this.reasonCancelled,
+    stages: this.stages,
+    manager: this.manager
+  }
+
+};
 
 // Generate ticker
 TripSchema.pre('save', function(callback) {
