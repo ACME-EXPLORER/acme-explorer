@@ -144,13 +144,22 @@ TripSchema.methods.cleanup = function() {
 
 };
 
-// Generate ticker
+// Generate ticker and compute total price
 TripSchema.pre('save', function(callback) {
+  // Ticker
   const newTrip = this;
   const day = dateFormat(new Date(), 'yymmdd');
 
   const generatedTicker = [day,  idGenerator()].join('-');
   newTrip.ticker = generatedTicker;
+
+  // Total price
+  const initialValue = 0;
+  const totalPrice = this.stages.map((e)=>{return e.price}).reduce(
+    (previousValue, currentValue) => previousValue + currentValue,
+    initialValue
+  );
+  newTrip.price = totalPrice;
 
   callback();
 });

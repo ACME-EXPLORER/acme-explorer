@@ -32,7 +32,7 @@ export const create_trip = (req, res) => {
     startDate: req.body.startDate,
     endDate: req.body.endDate,
     pictures: req.body.pictures,
-    state: req.body.state,
+    state: 'INACTIVE',
     reasonCancelled: req.body.reasonCancelled,
     stages: req.body.stages
   }
