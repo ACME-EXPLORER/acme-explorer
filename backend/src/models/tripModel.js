@@ -131,7 +131,14 @@ TripSchema.methods.cleanup = function() {
     pictures: this.pictures,
     state: this.state,
     reasonCancelled: this.reasonCancelled,
-    stages: this.stages,
+    stages: this.stages.map(function(e) {
+      return {
+        id: e._id,
+        title: e.title,
+        description: e.description,
+        price: e.price
+      }
+    }),
     manager: this.manager
   }
 
