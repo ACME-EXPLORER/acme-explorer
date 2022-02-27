@@ -1,44 +1,101 @@
-import mongoose from 'mongoose';
-import moment from 'moment';
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const { Schema } = mongoose;
+const StageSchema = new Schema({
+  title: {
+    type: String,
+    required: 'Kindly enter the title of the stage'
+  },
+  description: {
+    type: String,
+    required: 'Kindly enter the description of the stage'
+  },
+  price: {
+    type: Number,
+    min: 0,
+    required: 'Kindly enter the price of the stage'
+  }
 
-const TripSchema = new Schema(
-  {
-    ticker: { type: String, required: true },
-    title: { type: String, required: true },
-    description: { type: String, default: null },
-    price: { type: Number, default: null },
-    requirements: { type: [String], required: true },
-    startDate: { type: Number, required: true },
-    endDate: { type: Number, required: true },
-    pictures: [String],
+})
+
+const State = [
+  'ACTIVE',
+  'INACTIVE',
+  'CANCELLED',
+  'STARTED'
+]
+
+  // TODO: Define indexes
+  // TODO: Add pre methods
+  // TODO: strict: false ???
+  const TripSchema = new Schema({
+    ticker: {
+      type: String,
+      unique: true,
+      validate: {
+        validator: function(v) {
+          return /\d{6}-[A-Z]{4}/.test(v);
+        },
+        message: 'ticker is not valid, Pattern is: "220527-ABCD"'
+      }
+    },
+    title: {
+      type: String,
+      required: 'Title is required'
+    },
+    description: {
+      type: String,
+      required: 'Description is required'
+    },
+    price: {
+      type: Number,
+      min: 0
+    },
+    requirements: {
+      type: [String],
+      default: []
+    },
+    // startDate must be in the future
+    startDate: {
+      type: Date,
+      required: 'Start date is required',
+      validate: {
+        validator: function(v) {
+          return v > new Date();
+        },
+        message: 'Start date must be in the future'
+      }
+    },
+    endDate: {
+      type: Date,
+      required: 'End date is required',
+      validate: {
+        validator: function(v) {
+          return v > this.startDate;    // StartDate before endDate
+        }
+      }
+    },
+    pictures: {
+      type: [String],
+      default: []
+    },
     state: {
       type: String,
       required: true,
-      enum: ['active', 'inactive', 'canceled'],
-      default: 'inactive'
+      enum: State,
+      default: 'INACTIVE'
     },
-    reasonCanceled: {
-      type: String,
-      default: null
+    reasonCancelled: {
+      type: String
     },
-    stages: [
-      {
-        title: { type: String, required: true },
-        description: { type: String, required: true },
-        password: { type: String, required: true },
-        price: { type: Number, required: true }
-      }
-    ],
-    manager: { type: Schema.Types.ObjectId, ref: 'Actor', default: null },
-    createdAt: Number,
-    updatedAt: Number
-  },
-  {
-    timestamps: { currentTime: () => moment().unix() }
-  }
-);
+    stages: [{  // TODO: MinSize = 1
+      type: Schema.Types.ObjectId,
+      ref: 'Stage'
+    }],
+
+    // TODO: Add userId (MANAGER)
+    // manager: { type: Schema.Types.ObjectId, ref: 'Actor', default: null },
+  });
 
 TripSchema.index({ ticker: 'text', title: 'text', description: 'text' });
 
@@ -47,4 +104,8 @@ TripSchema.pre('save', (callback) => {
   callback();
 });
 
-export const tripModel = mongoose.model('Trips', TripSchema);
+
+module.exports = mongoose.model('Trip', TripSchema);
+module.exports = mongoose.model('Stage', StageSchema);
+module.exports = State;
+// export const tripModel = mongoose.model('Trips', TripSchema);
