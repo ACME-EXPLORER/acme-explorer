@@ -1,5 +1,17 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+import mongoose from 'mongoose';
+const { Schema } = mongoose;
+
+// Import dateformat
+
+
+import dateFormat from 'dateformat';
+// const dateFormat = require('dateformat')
+
+// Import customAlphabet from nanoid
+import { customAlphabet } from 'nanoid';
+
+// const customAlphabet = require('nanoid').customAlphabet
+const idGenerator = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 4)
 
 const StageSchema = new Schema({
   title: {
@@ -21,8 +33,7 @@ const StageSchema = new Schema({
 const State = [
   'ACTIVE',
   'INACTIVE',
-  'CANCELLED',
-  'STARTED'
+  'CANCELLED'
 ]
 
   // TODO: Define indexes
@@ -32,12 +43,12 @@ const State = [
     ticker: {
       type: String,
       unique: true,
-      validate: {
-        validator: function(v) {
-          return /\d{6}-[A-Z]{4}/.test(v);
-        },
-        message: 'ticker is not valid, Pattern is: "220527-ABCD"'
-      }
+      // validate: {
+      //   validator: function(v) {
+      //     return /^\d{6}-[A-Z]{4}$/.test(v);
+      //   },
+      //   message: 'ticker is not valid, Pattern is: "220527-ABCD"'
+      // }
     },
     title: {
       type: String,
@@ -92,20 +103,25 @@ const State = [
       type: Schema.Types.ObjectId,
       ref: 'Stage'
     }],
-
-    // TODO: Add userId (MANAGER)
-    // manager: { type: Schema.Types.ObjectId, ref: 'Actor', default: null },
+    manager: {
+      // TODO: It must belong to an actor of type manager
+      type: Schema.Types.ObjectId
+    }
   });
 
 TripSchema.index({ ticker: 'text', title: 'text', description: 'text' });
 
-// TODO: Generate ticker
-TripSchema.pre('save', (callback) => {
+// Generate ticker
+TripSchema.pre('save', function(callback) {
+  const newTrip = this;
+  const day = dateFormat(new Date(), 'yymmdd');
+
+  const generatedTicker = [day,  idGenerator()].join('-');
+  newTrip.ticker = generatedTicker;
+
   callback();
 });
 
 
-module.exports = mongoose.model('Trip', TripSchema);
-module.exports = mongoose.model('Stage', StageSchema);
-module.exports = State;
-// export const tripModel = mongoose.model('Trips', TripSchema);
+export const tripModel = mongoose.model('Trip', TripSchema);
+export const stageModel = mongoose.model('Stage', StageSchema);

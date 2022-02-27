@@ -10,7 +10,8 @@ export const find_all_trips = (req, res) => {
   });
 };
 
-export const find_an_trip = (req, res) => {
+// Find one trip by id
+export const find_trip = (req, res) => {
   tripModel.findById(req.params.tripId, (err, trip) => {
     if (err) {
       res.status(500).send(err);
@@ -20,7 +21,8 @@ export const find_an_trip = (req, res) => {
   });
 };
 
-export const create_an_trip = (req, res) => {
+export const create_trip = (req, res) => {
+  // TODO: Check credentials (manager)
   const newTrip = new tripModel(req.body);
 
   newTrip.save((err, trip) => {
@@ -36,7 +38,7 @@ export const create_an_trip = (req, res) => {
   });
 };
 
-export const update_an_trip = (req, res) => {
+export const update_trip = (req, res) => {
   tripModel.findOneAndUpdate({ _id: req.params.tripId }, req.body, { new: true }, (err, trip) => {
     if (err) {
       if (err.name === 'ValidationError') {
@@ -50,7 +52,7 @@ export const update_an_trip = (req, res) => {
   });
 };
 
-export const delete_an_trip = (req, res) => {
+export const delete_trip = (req, res) => {
   tripModel.deleteOne({ _id: req.params.tripId }, (err, trip) => {
     if (err) {
       res.status(500).send(err);
