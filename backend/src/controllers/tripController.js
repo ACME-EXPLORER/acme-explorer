@@ -55,13 +55,19 @@ export const find_trips_by_keyword = (req, res) => {
       { 'state': 'CANCELLED' }
     ]
   };
+
+  let sort = null
   // if keyword is not null, undefined or empty
   if (keyword !== null && keyword !== undefined && keyword !== '') {
     query.$text = { $search: keyword };
+    query = query, { score: { $meta: "textScore" } };
+
+    sort = { sort: { score: { $meta: "textScore" } } };
   }
 
   tripModel.find(
     query,
+    sort,
     (err, trips) => {
       if (err) {
         res.status(500).send(err);
