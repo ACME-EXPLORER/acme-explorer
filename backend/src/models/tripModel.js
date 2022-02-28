@@ -107,7 +107,29 @@ const State = [
   });
 
 // Indexes
-TripSchema.index({ ticker: 'text', title: 'text', description: 'text' });
+// Create a text index for ticker, title and description with weights 10, 5 and 2
+TripSchema.index(
+  { 
+    state: 1,
+    ticker: 'text', 
+    title: 'text', 
+    description: 'text' 
+  }, 
+  { 
+    weights: { 
+      ticker: 10, 
+      title: 5, 
+      description: 2 
+    },
+  name: "TextIndexTrip" 
+});
+
+TripSchema.index(
+  {
+    managerId: 1
+  }
+)
+
 
 // Cleanup method
 TripSchema.methods.cleanup = function() {

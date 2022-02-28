@@ -20,6 +20,12 @@ export const tripRoutes = (app) => {
    * @type get put
    * @url /v1/trips/:tripId
    */
-  app.route('/v1/trips/:tripId').get(find_trip).put(update_trip).delete(delete_trip)
-  // .patch(patch_trip);
+  app.route('/v1/trips/:tripId').get(find_trip).put(update_trip).delete(delete_trip);
+
+  /**
+   * @section trips
+   * @type get
+   * @url /v1/trips/:managerId
+   */
+  app.route('/v1/myTrips').get(find_my_trips);
 };

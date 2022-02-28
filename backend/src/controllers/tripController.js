@@ -17,10 +17,43 @@ export const find_trip = (req, res) => {
     if (err) {
       res.status(500).send(err);
     } else {
-      res.json(trip);
+      res.json(trip.cleanup());
     }
   });
 };
+
+// Find trips of the logged in manager
+// TODO: Session management
+export const find_my_trips = (req, res) => {
+  tripModel.find({ 
+    // manager: req.params.managerId 
+  }, (err, trips) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.json(trips);
+    }
+  });
+}
+
+export const find_trips_by_keyword = (req, res) => {
+  // Find trips with status= Active or status=cancelled
+  tripModel.find({
+    $or: [
+      { status: 'Active' },
+      { status: 'Cancelled' }
+    ]},
+    {$text: { $search: req.params.keyword }},
+    { score: { $meta: 'textScore' } }
+    .sort({ score: { $meta: 'textScore' } }), 
+    (err, trips) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.json(trips);
+      }
+  });
+}
 
 export const create_trip = (req, res) => {
   console.log(Date() + ' - POST /trips');
