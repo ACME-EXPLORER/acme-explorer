@@ -159,14 +159,20 @@ TripSchema.pre('save', function(callback) {
 // Compute total price before update
 TripSchema.pre('findOneAndUpdate', function(next) {
   // Total price
-  const newTrip = this._update.$set;
-  const initialValue = 0;
-  const totalPrice = this._update.$set.stages.map((e)=>{return e.price}).reduce(
-    (previousValue, currentValue) => previousValue + currentValue,
-    initialValue
-  );
 
-  newTrip.price = totalPrice;
+  // If stages is not undefined
+  if (this.getUpdate().stages !== undefined) {
+    const newTrip = this._update.$set;
+    const initialValue = 0;
+    const totalPrice = this._update.$set.stages.map((e)=>{return e.price}).reduce(
+      (previousValue, currentValue) => previousValue + currentValue,
+      initialValue
+    );
+
+    newTrip.price = totalPrice;
+  
+  }
+  
   next();
 
 })

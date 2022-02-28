@@ -84,16 +84,18 @@ export const update_trip = (req, res) => {
         }
       }
 
+
+
       // If the new state is CANCELLED, update the reason cancelled
       // TODO: A trip can only be cancelled if it does not contain any accepted applications
       if (req.body.state === 'CANCELLED') {
+        update.$set.reasonCancelled = req.body.reasonCancelled;
         if(update.$set.reasonCancelled === '' || update.$set.reasonCancelled === null || update.$set.reasonCancelled === undefined) {
           return res.status(400).send('The cancel reason  cannot be empty');
         }
-        update.$set.reasonCancelled = req.body.reasonCancelled;
       }
 
-      tripModel.findOneAndUpdate({_id: req.params.tripId}, update, {new: true}, function(err, trip) {
+      tripModel.findOneAndUpdate({_id: req.params.tripId}, update, {new: true, runValidators: true}, function(err, trip) {
         if(err) {
           res.status(500).send(err);
         } else {
