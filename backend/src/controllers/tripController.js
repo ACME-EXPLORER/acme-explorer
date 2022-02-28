@@ -70,6 +70,7 @@ export const update_trip = (req, res) => {
         return res.status(400).send('The trip must be INACTIVE');
       }
 
+
       var update = {
         $set: {
           title: req.body.title,
@@ -78,8 +79,18 @@ export const update_trip = (req, res) => {
           startDate: req.body.startDate,
           endDate: req.body.endDate,
           pictures: req.body.pictures,
-          stages: req.body.stages
+          stages: req.body.stages,
+          state: req.body.state
         }
+      }
+
+      // If the new state is CANCELLED, update the reason cancelled
+      // TODO: A trip can only be cancelled if it does not contain any accepted applications
+      if (req.body.state === 'CANCELLED') {
+        if(update.$set.reasonCancelled === '' || update.$set.reasonCancelled === null || update.$set.reasonCancelled === undefined) {
+          return res.status(400).send('The cancel reason  cannot be empty');
+        }
+        update.$set.reasonCancelled = req.body.reasonCancelled;
       }
 
       tripModel.findOneAndUpdate({_id: req.params.tripId}, update, {new: true}, function(err, trip) {
@@ -100,6 +111,7 @@ export const update_trip = (req, res) => {
 export const delete_trip = (req, res) => {
   // TODO: Check that the user is logged in as a manager
   // TODO: Check that the trip belongs to the logged manager
+  // TODO: Check that the object id fulfills the regex (and return 404 if not)
   console.log(Date() + ' - DELETE /trips/' + req.params.tripId);
 
   tripModel.findById(req.params.tripId, (err, trip) => { 
