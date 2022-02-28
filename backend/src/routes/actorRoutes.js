@@ -3,7 +3,8 @@ import {
   create_an_actor,
   find_an_actor,
   update_an_actor,
-  delete_an_actor
+  delete_an_actor,
+  ban_an_actor
 } from '../controllers/actorController.js';
 
 export const actorRoutes = (app) => {
@@ -40,4 +41,15 @@ export const actorRoutes = (app) => {
    * @url /v1/actors/:actorId/ban
    */
   app.route('/v1/actors/:actorId/ban').patch(ban_an_actor);
+
+  /**
+   *
+   * Get an actor
+   *    RequiredRoles: to be the an Administrator
+   *
+   * @section bans
+   * @type patch
+   * @url /v1/actors/:actorId/unban
+   */
+  app.route('/v1/actors/:actorId/unban').patch(ban_an_actor);
 };

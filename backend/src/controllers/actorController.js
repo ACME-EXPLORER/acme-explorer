@@ -79,3 +79,17 @@ export const ban_an_actor = (req, res) => {
     }
   );
 };
+
+export const unban_an_actor = (req, res) => {
+  actorModel.findOneAndUpdate({ _id: req.params.actorId }, { state: UserState.ACTIVE }, { new: true }, (err, actor) => {
+    if (err) {
+      if (err.name === 'ValidationError') {
+        res.status(422).send(err);
+      } else {
+        res.status(500).send(err);
+      }
+    } else {
+      res.json(actor);
+    }
+  });
+};
