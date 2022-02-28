@@ -5,7 +5,11 @@ export const find_all_trips = (req, res) => {
     if (err) {
       res.status(500).send(err);
     } else {
-      res.json(trips);
+      res.json(
+        trips.map((trip) => {
+          return trip.cleanup();
+        })
+        );
     }
   });
 };
@@ -16,8 +20,10 @@ export const find_trip = (req, res) => {
   tripModel.findById(req.params.tripId, (err, trip) => {
     if (err) {
       res.status(500).send(err);
-    } else {
+    } else if (trip) {
       res.json(trip.cleanup());
+    } else {
+      res.status(404).send({ error: "Trip not found" });
     }
   });
 };
@@ -31,28 +37,41 @@ export const find_my_trips = (req, res) => {
     if (err) {
       res.status(500).send(err);
     } else {
-      res.json(trips);
+      res.json(trips.map((trip) => {
+        return trip.cleanup();
+      })
+        );
     }
   });
 }
 
 export const find_trips_by_keyword = (req, res) => {
-  // Find trips with status= Active or status=cancelled
-  tripModel.find({
+  // If no keyword is provided, return all trips with state=Active or state=cancelled
+  const keyword = req.query.keyword;
+
+  let query = {
     $or: [
-      { status: 'Active' },
-      { status: 'Cancelled' }
-    ]},
-    {$text: { $search: req.params.keyword }},
-    { score: { $meta: 'textScore' } }
-    .sort({ score: { $meta: 'textScore' } }), 
+      { 'state': 'ACTIVE' },
+      { 'state': 'CANCELLED' }
+    ]
+  };
+  // if keyword is not null, undefined or empty
+  if (keyword !== null && keyword !== undefined && keyword !== '') {
+    query.$text = { $search: keyword };
+  }
+
+  tripModel.find(
+    query,
     (err, trips) => {
       if (err) {
         res.status(500).send(err);
       } else {
-        res.json(trips);
+        res.json(trips.map((trip)=> {
+          return trip.cleanup();
+        }))
       }
-  });
+    }
+  )
 }
 
 export const create_trip = (req, res) => {
