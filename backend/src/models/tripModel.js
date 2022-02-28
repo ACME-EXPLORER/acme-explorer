@@ -74,7 +74,8 @@ const State = [
       validate: {
         validator: function(v) {
           return v > this.startDate;    // StartDate before endDate
-        }
+        },
+        message: 'End date must be after start date'
       }
     },
     pictures: {
