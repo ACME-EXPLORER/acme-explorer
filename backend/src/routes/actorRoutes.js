@@ -25,8 +25,19 @@ export const actorRoutes = (app) => {
    *    RequiredRoles: to be the proper actor or an Administrator
    *
    * @section actors
-   * @type get put
+   * @type get put delete
    * @url /v1/actors/:actorId
    */
   app.route('/v1/actors/:actorId').get(find_an_actor).put(update_an_actor).delete(delete_an_actor);
+
+  /**
+   *
+   * Get an actor
+   *    RequiredRoles: to be the an Administrator
+   *
+   * @section bans
+   * @type patch
+   * @url /v1/actors/:actorId/ban
+   */
+  app.route('/v1/actors/:actorId/ban').patch(ban_an_actor);
 };
