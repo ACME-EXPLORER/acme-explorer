@@ -19,6 +19,8 @@ const ActorSchema = new Schema(
       unique: true,
       match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
     },
+    phoneNumber: { type: String, default: null },
+    address: { type: String, default: null },
     preferredLanguage: {
       type: String,
       enum: ['en', 'es'],
