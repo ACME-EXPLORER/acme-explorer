@@ -94,21 +94,6 @@ export const update_trip = (req, res) => {
     })
   }
 
-  
-
-  // tripModel.findOneAndUpdate({ _id: req.params.tripId }, update, { new: true }, (err, trip) => {
-  //   if (err) {
-  //     if (err.name === 'ValidationError') {
-  //       res.status(422).send(err);
-  //     } else {
-  //       res.status(500).send(err);
-  //     }
-  //   } else {
-  //     res.json(trip.cleanup());
-  //   }
-  // });
-// };
-
 export const delete_trip = (req, res) => {
   tripModel.deleteOne({ _id: req.params.tripId }, (err, trip) => {
     if (err) {
