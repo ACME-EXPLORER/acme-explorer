@@ -4,7 +4,8 @@ import {
   find_an_actor,
   update_an_actor,
   delete_an_actor,
-  ban_an_actor
+  ban_an_actor,
+  unban_an_actor
 } from '../controllers/actorController.js';
 
 export const actorRoutes = (app) => {
@@ -51,5 +52,5 @@ export const actorRoutes = (app) => {
    * @type patch
    * @url /v1/actors/:actorId/unban
    */
-  app.route('/v1/actors/:actorId/unban').patch(ban_an_actor);
+  app.route('/v1/actors/:actorId/unban').patch(unban_an_actor);
 };
