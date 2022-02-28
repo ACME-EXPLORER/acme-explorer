@@ -102,7 +102,8 @@ const State = [
     },
     manager: {
       // TODO: It must belong to an actor of type manager
-      type: Schema.Types.ObjectId
+      type: Schema.Types.ObjectId,
+      required: true
     }
   });
 

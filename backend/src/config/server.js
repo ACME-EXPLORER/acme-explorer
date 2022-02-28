@@ -8,6 +8,7 @@ import { applicationRoutes } from '../routes/applicationRoutes.js';
 import { sponsorshipRoutes } from '../routes/sponsorshipRoutes.js';
 import { tripRoutes } from '../routes/tripRoutes.js';
 import { redisConnection, redisClose } from './redis.js';
+import { dashboardRoutes } from '../routes/dashboardRoutes.js';
 
 export class Server {
   constructor() {
@@ -29,6 +30,7 @@ export class Server {
     applicationRoutes(this.app);
     sponsorshipRoutes(this.app);
     tripRoutes(this.app);
+    dashboardRoutes(this.app);
 
     this.app.use((err, req, res, next) => {
       if (err.code) {

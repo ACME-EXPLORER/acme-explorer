@@ -92,7 +92,8 @@ export const create_trip = (req, res) => {
     endDate: req.body.endDate,
     pictures: req.body.pictures,
     state: 'INACTIVE',
-    stages: req.body.stages
+    stages: req.body.stages,
+    manager: req.body.manager
   }
 
   const newTrip = new tripModel(trip);
