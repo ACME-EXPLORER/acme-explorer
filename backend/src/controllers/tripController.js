@@ -9,7 +9,7 @@ export const find_all_trips = (req, res) => {
         trips.map((trip) => {
           return trip.cleanup();
         })
-        );
+      );
     }
   });
 };
@@ -23,7 +23,7 @@ export const find_trip = (req, res) => {
     } else if (trip) {
       res.json(trip.cleanup());
     } else {
-      res.status(404).send({ error: "Trip not found" });
+      res.status(404).send({ error: 'Trip not found' });
     }
   });
 };
@@ -31,54 +31,53 @@ export const find_trip = (req, res) => {
 // Find trips of the logged in manager
 // TODO: Session management
 export const find_my_trips = (req, res) => {
-  tripModel.find({ 
-    // manager: req.params.managerId 
-  }, (err, trips) => {
-    if (err) {
-      res.status(500).send(err);
-    } else {
-      res.json(trips.map((trip) => {
-        return trip.cleanup();
-      })
+  tripModel.find(
+    {
+      // manager: req.params.managerId
+    },
+    (err, trips) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.json(
+          trips.map((trip) => {
+            return trip.cleanup();
+          })
         );
+      }
     }
-  });
-}
+  );
+};
 
 export const find_trips_by_keyword = (req, res) => {
   // If no keyword is provided, return all trips with state=Active or state=cancelled
   const keyword = req.query.keyword;
 
   let query = {
-    $or: [
-      { 'state': 'ACTIVE' },
-      { 'state': 'CANCELLED' }
-    ]
+    $or: [{ state: 'ACTIVE' }, { state: 'CANCELLED' }]
   };
 
-  let sort = null
+  let sort = null;
   // if keyword is not null, undefined or empty
   if (keyword !== null && keyword !== undefined && keyword !== '') {
     query.$text = { $search: keyword };
-    query = query, { score: { $meta: "textScore" } };
+    (query = query), { score: { $meta: 'textScore' } };
 
-    sort = { sort: { score: { $meta: "textScore" } } };
+    sort = { sort: { score: { $meta: 'textScore' } } };
   }
 
-  tripModel.find(
-    query,
-    sort,
-    (err, trips) => {
-      if (err) {
-        res.status(500).send(err);
-      } else {
-        res.json(trips.map((trip)=> {
+  tripModel.find(query, sort, (err, trips) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.json(
+        trips.map((trip) => {
           return trip.cleanup();
-        }))
-      }
+        })
+      );
     }
-  )
-}
+  });
+};
 
 export const create_trip = (req, res) => {
   console.log(Date() + ' - POST /trips');
@@ -94,7 +93,7 @@ export const create_trip = (req, res) => {
     state: 'INACTIVE',
     stages: req.body.stages,
     manager: req.body.manager
-  }
+  };
 
   const newTrip = new tripModel(trip);
 
@@ -118,17 +117,14 @@ export const update_trip = (req, res) => {
   // TODO: Check that the trip belongs to the logged manager
   // TODO: Check that the object id fulfills the regex (and return 404 if not)
 
-
   tripModel.findById(req.params.tripId, (err, trip) => {
-    if(err) {
+    if (err) {
       res.status(500).send(err);
     } else if (trip) {
-
       // Check that the trip is INACTIVE
       if (trip.state !== 'INACTIVE') {
         return res.status(400).send('The trip must be INACTIVE');
       }
-
 
       var update = {
         $set: {
@@ -141,32 +137,38 @@ export const update_trip = (req, res) => {
           stages: req.body.stages,
           state: req.body.state
         }
-      }
-
-
+      };
 
       // If the new state is CANCELLED, update the reason cancelled
       // TODO: A trip can only be cancelled if it does not contain any accepted applications
       if (req.body.state === 'CANCELLED') {
         update.$set.reasonCancelled = req.body.reasonCancelled;
-        if(update.$set.reasonCancelled === '' || update.$set.reasonCancelled === null || update.$set.reasonCancelled === undefined) {
+        if (
+          update.$set.reasonCancelled === '' ||
+          update.$set.reasonCancelled === null ||
+          update.$set.reasonCancelled === undefined
+        ) {
           return res.status(400).send('The cancel reason  cannot be empty');
         }
       }
 
-      tripModel.findOneAndUpdate({_id: req.params.tripId}, update, {new: true, runValidators: true}, function(err, trip) {
-        if(err) {
-          res.status(500).send(err);
-        } else {
-          res.json(trip.cleanup());
+      tripModel.findOneAndUpdate(
+        { _id: req.params.tripId },
+        update,
+        { new: true, runValidators: true },
+        function(err, trip) {
+          if (err) {
+            res.status(500).send(err);
+          } else {
+            res.json(trip.cleanup());
+          }
         }
-      });
-      } else {
-        res.status(404).send({ error: "Trip not found" });
-      }
-    })
-  }
-
+      );
+    } else {
+      res.status(404).send({ error: 'Trip not found' });
+    }
+  });
+};
 
 // A manager can delete an INACTIVE trip that belongs to him
 export const delete_trip = (req, res) => {
@@ -175,24 +177,24 @@ export const delete_trip = (req, res) => {
   // TODO: Check that the object id fulfills the regex (and return 404 if not)
   console.log(Date() + ' - DELETE /trips/' + req.params.tripId);
 
-  tripModel.findById(req.params.tripId, (err, trip) => { 
-    if(err) {
+  tripModel.findById(req.params.tripId, (err, trip) => {
+    if (err) {
       res.status(500).send(err);
-    } else if(trip) {
+    } else if (trip) {
       // Check that the trip is INACTIVE
       if (trip.state !== 'INACTIVE') {
         return res.status(400).send('The trip must be INACTIVE');
       }
 
-      tripModel.deleteOne({_id: req.params.tripId}, (err, trip) => {
-        if(err) {
+      tripModel.deleteOne({ _id: req.params.tripId }, (err, trip) => {
+        if (err) {
           res.status(500).send(err);
         } else {
           res.status(204).json({ message: 'Trip successfully deleted' });
         }
-      })
+      });
     } else {
-      res.status(404).send({ error: "Trip not found" });
+      res.status(404).send({ error: 'Trip not found' });
     }
-  })
-}
+  });
+};

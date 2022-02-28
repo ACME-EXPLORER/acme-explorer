@@ -37,5 +37,5 @@ export const tripRoutes = (app) => {
    * @url /v1/allTrips
    */
   // This route is not part of the requirements, consider removing it
-   app.route('/v1/allTrips').get(find_all_trips);
+  app.route('/v1/allTrips').get(find_all_trips);
 };
