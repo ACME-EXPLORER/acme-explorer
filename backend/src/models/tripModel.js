@@ -1,16 +1,8 @@
 import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
-// Import dateformat
-
-
 import dateFormat from 'dateformat';
-// const dateFormat = require('dateformat')
-
-// Import customAlphabet from nanoid
 import { customAlphabet } from 'nanoid';
-
-// const customAlphabet = require('nanoid').customAlphabet
 const idGenerator = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 4)
 
 const StageSchema = new Schema({
@@ -37,7 +29,6 @@ const State = [
 ]
 
   // TODO: Define indexes
-  // TODO: Add pre methods
   // TODO: strict: false ???
   const TripSchema = new Schema({
     ticker: {
