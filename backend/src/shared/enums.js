@@ -9,3 +9,8 @@ export const UserState = {
   ACTIVE: 'active',
   INACTIVE: 'inactive'
 };
+
+export const Languages = {
+  EN: 'en',
+  ES: 'es'
+};
