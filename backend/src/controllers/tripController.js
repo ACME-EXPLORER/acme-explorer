@@ -11,6 +11,7 @@ export const find_all_trips = (req, res) => {
 };
 
 // Find one trip by id
+// TODO: If trip is INACTIVE, only its owner (manager) can see it
 export const find_trip = (req, res) => {
   tripModel.findById(req.params.tripId, (err, trip) => {
     if (err) {
@@ -51,7 +52,7 @@ export const create_trip = (req, res) => {
   });
 };
 
-// A manager can update and INACTIVE trip
+// A manager can update an INACTIVE trip that belongs to him
 export const update_trip = (req, res) => {
   console.log(Date() + ' - PUT /trips/' + req.params.tripId);
   // TODO: Check credentials (manager)
@@ -94,12 +95,31 @@ export const update_trip = (req, res) => {
     })
   }
 
+
+// A manager can delete an INACTIVE trip that belongs to him
 export const delete_trip = (req, res) => {
-  tripModel.deleteOne({ _id: req.params.tripId }, (err, trip) => {
-    if (err) {
+  // TODO: Check that the user is logged in as a manager
+  // TODO: Check that the trip belongs to the logged manager
+  console.log(Date() + ' - DELETE /trips/' + req.params.tripId);
+
+  tripModel.findById(req.params.tripId, (err, trip) => { 
+    if(err) {
       res.status(500).send(err);
+    } else if(trip) {
+      // Check that the trip is INACTIVE
+      if (trip.state !== 'INACTIVE') {
+        return res.status(400).send('The trip must be INACTIVE');
+      }
+
+      tripModel.deleteOne({_id: req.params.tripId}, (err, trip) => {
+        if(err) {
+          res.status(500).send(err);
+        } else {
+          res.status(204).json({ message: 'Trip successfully deleted' });
+        }
+      })
     } else {
-      res.json({ message: 'Trip successfully deleted' });
+      res.status(404).send({ error: "Trip not found" });
     }
-  });
-};
+  })
+}
