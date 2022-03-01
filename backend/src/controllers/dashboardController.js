@@ -161,7 +161,7 @@ export const getRatioOfApplications = async (req, res) => {
       {
         $group: {
           _id: '$state',
-          count: { $sum: 1 }
+          count: { $count: {} }
         }
       },
       {
