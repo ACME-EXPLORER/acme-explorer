@@ -5,7 +5,9 @@ import {
   updateActor,
   deleteActor,
   banActor,
-  unbanActor
+  unbanActor,
+  registerExplorer,
+  getMeActor
 } from '../controllers/actorController.js';
 
 export const actorRoutes = (app) => {
@@ -49,6 +51,8 @@ export const actorRoutes = (app) => {
    *                $ref: '#/components/schemas/actor'
    */
   app.route('/v1/actors').get(findActors).post(createActor);
+  app.route('/v1/actors/register').post(registerExplorer);
+  app.route('/v1/actors/me').get(getMeActor);
 
   /**
    * @openapi

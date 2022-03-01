@@ -37,3 +37,10 @@ export class UserForbidden extends BaseError {
     this.code = StatusCodes.FORBIDDEN;
   }
 }
+
+export class InactiveUser extends BaseError {
+  constructor(message = '') {
+    super(message);
+    this.message = 'El usuario no está activo. Por favor revisar.';
+  }
+}

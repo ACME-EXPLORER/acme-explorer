@@ -1,6 +1,6 @@
 import { tripModel } from '../models/tripModel.js';
-import Constants from "../shared/constants.js";
-import {StatusCodes} from "http-status-codes";
+import Constants from '../shared/constants.js';
+import { StatusCodes } from 'http-status-codes';
 
 // Find one trip by id
 // TODO: If trip is INACTIVE, only its owner (manager) can see it
@@ -41,28 +41,31 @@ export const findTrips = async (req, res) => {
   // If no keyword is provided, return all trips with state=Active or state=cancelled
   let { perPage, page, sort, keyword, ...rest } = req.query;
   const [field, sortType] = sort ? sort.split(',') : Constants.defaultSort;
+  const $sort = { [field]: sortType };
   perPage = perPage ? parseInt(perPage) : Constants.defaultPerPage;
   page = Math.max(0, page ?? 0);
 
   let query = {
     $or: [{ state: 'ACTIVE' }, { state: 'CANCELLED' }],
-    ...rest
+    ...rest,
+    ...tripModel.getFinderQuery(req.query)
   };
+  let projection = {};
 
-  // if keyword is not null, undefined or empty
-  if (keyword !== null && keyword !== undefined && keyword !== '') {
-    query.$text = { $search: keyword };
-    query.score = { $meta: 'textScore' };
-    sort.sort = { score: { $meta: 'textScore' } };
+  if(keyword) {
+    $sort.score = { $meta: 'textScore' };
+    projection =  { score : { $meta: 'textScore' } };
   }
 
   try {
     const trips = await tripModel
-      .find(query)
+      .find(query, projection)
+      .populate('manager')
       .skip(perPage * page)
       .limit(perPage)
-      .sort({ [field]: sortType })
+      .sort($sort)
       .exec();
+
     const count = await tripModel.countDocuments();
     res.json({
       records: trips.map(trip => trip.cleanup()),

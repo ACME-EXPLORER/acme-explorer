@@ -6,6 +6,7 @@ const { Schema } = mongoose;
 
 const ActorSchema = new Schema(
   {
+    uid: { type: String, required: true },
     name: {
       type: String,
       required: 'You need to provide a name'
@@ -44,5 +45,13 @@ const ActorSchema = new Schema(
     timestamps: { currentTime: () => moment().unix() }
   }
 );
+
+ActorSchema.methods.isActive = function() {
+  return this.state === BasicState.ACTIVE;
+};
+
+ActorSchema.methods.isExplorer = function() {
+  return this.role === Roles.EXPLORER;
+};
 
 export const actorModel = mongoose.model('Actor', ActorSchema);

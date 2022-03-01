@@ -12,6 +12,7 @@ import { redisConnection, redisClose } from './redis.js';
 import { dashboardRoutes } from '../routes/dashboardRoutes.js';
 import { StatusCodes } from 'http-status-codes';
 import { errorHandler } from '../shared/middlewares/error-handler.js';
+import { authMiddleware } from '../shared/middlewares/authorization.js';
 
 export class Server {
   constructor() {
@@ -29,6 +30,7 @@ export class Server {
 
     // Swagger
     this.app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
+    this.app.use(authMiddleware);
 
     // End Points
     actorRoutes(this.app);

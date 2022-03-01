@@ -1,8 +1,9 @@
 import mongoose from 'mongoose';
-const { Schema } = mongoose;
-
 import dateFormat from 'dateformat';
 import { customAlphabet } from 'nanoid';
+import Constants from '../shared/constants.js';
+
+const { Schema } = mongoose;
 const idGenerator = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 4);
 
 const StageSchema = new Schema({
@@ -96,7 +97,6 @@ const TripSchema = new Schema({
     }
   },
   manager: {
-    // TODO: It must belong to an actor of type manager
     type: Schema.Types.ObjectId,
     ref: 'Actor',
     required: 'Please provide a manager.'
@@ -107,7 +107,6 @@ const TripSchema = new Schema({
 // Create a text index for ticker, title and description with weights 10, 5 and 2
 TripSchema.index(
   {
-    state: 1,
     ticker: 'text',
     title: 'text',
     description: 'text'
@@ -125,6 +124,22 @@ TripSchema.index(
 TripSchema.index({
   managerId: 1
 });
+
+TripSchema.statics.getFinderQuery = function(query) {
+  return {
+    ...(query.keyword ? { $text : { $search: query.keyword } } : {}),
+    ...(query.minPrice || query.maxPrice
+      ? {
+          price: {
+            $gte: query.minPrice || 0,
+            $lte: query.maxPrice || Constants.maxPrice
+          }
+        }
+      : {}),
+    ...(query.startDate ? { startDate: query.startDate } : {}),
+    ...(query.endDate ? { endDate: query.endDate } : {})
+  };
+};
 
 // Cleanup method
 TripSchema.methods.cleanup = function() {
@@ -148,7 +163,11 @@ TripSchema.methods.cleanup = function() {
         price: e.price
       };
     }),
-    manager: this.manager
+    manager: this.manager ? {
+      id: this.manager.id,
+      name: this.manager.name,
+      surname: this.manager.surname
+    } : {}
   };
 };
 

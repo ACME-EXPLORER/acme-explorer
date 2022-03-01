@@ -1,5 +1,8 @@
 import { actorModel } from '../models/actorModel.js';
 import { BasicState } from '../shared/enums.js';
+import { InactiveUser } from '../shared/index.js';
+import firebase from '../shared/firebase.js';
+import { StatusCodes } from 'http-status-codes';
 
 export const findActors = (req, res) => {
   actorModel.find({}, (err, actors) => {
@@ -97,4 +100,44 @@ export const unbanActor = (req, res) => {
       }
     }
   );
+};
+
+export const registerExplorer = async (req, res) => {
+  try {
+    const userPayload = req.body;
+
+    const user = await firebase.auth().createUser({
+      email: userPayload.email,
+      password: userPayload.password,
+      displayName: `${userPayload.firstname} ${userPayload.lastname}`
+    });
+
+    const newActor = new actorModel({
+      uid: user.uid,
+      name: userPayload.firstname,
+      surname: userPayload.lastname,
+      email: userPayload.email,
+      phoneNumber: userPayload.phone,
+      address: userPayload.address
+    });
+
+    await newActor.save();
+
+    res.status(StatusCodes.CREATED).json(newActor);
+  } catch (e) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e.message);
+  }
+};
+
+export const getMeActor = async (req, res, next) => {
+  try {
+    const user = req.app.locals.user;
+    if (user.isActive()) {
+      res.status(StatusCodes.OK).json(user);
+    } else {
+      return next(new InactiveUser());
+    }
+  } catch (e) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e.message);
+  }
 };

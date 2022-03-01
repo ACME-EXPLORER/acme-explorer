@@ -114,3 +114,5 @@ kubertenes/secret.yml
 
 # VSCode
 .vscode/
+
+acme-explorer-firebase.json

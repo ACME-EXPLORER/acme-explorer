@@ -14,7 +14,7 @@ export function TripThumbnail ({ trip, onApply }) {
       </Link>
       <CardBody>
         <CardTitle tag='h4'>
-          <Link to={'/trip/' + trip.id}>{trip.name}</Link>
+          <Link to={'/trip/' + trip.id}>{trip.title}</Link>
         </CardTitle>
         <CardSubtitle
           className='mb-2 text-muted'
@@ -23,17 +23,17 @@ export function TripThumbnail ({ trip, onApply }) {
           <Badge
             color='info mx-3'
             href='#'
-          > {trip.category.name}
+          > {trip.ticker}
           </Badge>
           <Badge
             color='info mx-3'
             href='#'
-          > {trip.user.username}
+          > {trip.manager.name + ' ' + trip.manager.surname}
           </Badge>
           <Badge
             color='info mx-3'
             href='#'
-          > {(new Date(trip.createdAt * 1000).toLocaleDateString())}
+          > {trip.startDate + ' -  ' + trip.endDate}
           </Badge>
         </CardSubtitle>
         <CardText>

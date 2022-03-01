@@ -95,7 +95,6 @@ async function handleOnSubmit ({ setState, state }) {
   setState((state) => ({ ...state, loaded: false }));
   try {
     const user = await api.identity.login(state.model);
-    localStorage.setItem('token', user.token);
     location.hash = '#/';
     store.dispatch(loadUser(user));
   } catch (e) {

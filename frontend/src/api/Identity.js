@@ -9,12 +9,8 @@ class IdentityAPI extends Base {
 
   async login (payload) {
     const { user } = await auth.signInWithEmailAndPassword(payload.email, payload.password);
-    if (!user.emailVerified) {
-      await this.logout();
-      throw new Error('El email no está confirmado.');
-    }
-
-    return user.toJSON();
+    localStorage.setItem('token', user.toJSON().stsTokenManager.accessToken);
+    return this.me();
   }
 
   logout () {
@@ -22,10 +18,7 @@ class IdentityAPI extends Base {
   }
 
   async signup (payload) {
-    const { user } = await auth.createUserWithEmailAndPassword(payload.email, payload.password);
-    if (!user.emailVerified){
-    	await user.sendEmailVerification();
-    }
+    return this.apiClient.post(`${this.base}/register`, payload);
   }
 
   forgotPassword (email) {
@@ -33,15 +26,7 @@ class IdentityAPI extends Base {
   }
 
   async me () {
-     if(!auth.currentUser.isAnonymous){
-     	const existingToken = localStorage.getItem('token');
-     	const token = await auth.currentUser.getIdToken();
-     	if(existingToken !== token){
-            localStorage.setItem('token', token);
-        }
-     }
-
-     return auth.currentUser.toJSON();
+    return this.apiClient.get(`${this.base}/me`);
   }
 }
 
