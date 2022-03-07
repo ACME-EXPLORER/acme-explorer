@@ -7,8 +7,7 @@ export const findAllApplications = async (req, res, next) => {
   try {
     const applications = await applicationModel
       .find({})
-      .populate('trip')
-      .populate({ path: 'explorer', model: 'Actors' })
+      .populate(['trip', { path: 'explorer', model: 'Actors' }])
       .sort('state');
     res.json(applications);
   } catch (error) {
