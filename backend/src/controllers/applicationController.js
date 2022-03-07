@@ -5,7 +5,11 @@ import { RecordNotFound } from '../shared/exceptions.js';
 
 export const findAllApplications = async (req, res, next) => {
   try {
-    const applications = await applicationModel.find({}).sort('state');
+    const applications = await applicationModel
+      .find({})
+      .populate('trip')
+      .populate({ path: 'explorer', model: 'Actors' })
+      .sort('state');
     res.json(applications);
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
@@ -108,7 +112,10 @@ export const rejectApplication = async (req, res, next) => {
 
     const rejectedApplication = await applicationModel.findOneAndUpdate(
       { _id: req.params.applicationId },
-      { state: ApplicationState.REJECTED, reasonRejected: req.body.reasonRejected }
+      {
+        state: ApplicationState.REJECTED,
+        reasonRejected: req.body.reasonRejected
+      }
     );
 
     res.json(rejectedApplication);
