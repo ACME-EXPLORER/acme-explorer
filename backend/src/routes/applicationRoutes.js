@@ -42,7 +42,7 @@ export const applicationRoutes = (app) => {
    *              $ref: '#/components/schemas/application'
    *      responses:
    *        201:
-   *          description: The Application was successfully created
+   *          description: The application was successfully created
    *          content:
    *            application/json:
    *              schema:
@@ -72,7 +72,7 @@ export const applicationRoutes = (app) => {
    *       404:
    *         description: The application was not found
    *   put:
-   *     description: Update the book by the id
+   *     description: Update the application by the id
    *     tags: [Applications]
    *     parameters:
    *       - name: applicationId
@@ -98,7 +98,7 @@ export const applicationRoutes = (app) => {
    *       500:
    *         description: An error happened
    *   delete:
-   *     description: Remove the book by the id
+   *     description: Remove the application by the id
    *     tags: [Applications]
    *     parameters:
    *       - name: applicationId
