@@ -30,7 +30,7 @@ export const actorRoutes = (app) => {
    *            schema:
    *              type: array
    *              items:
-   *                $ref: '#/components/schemas/actors'
+   *                $ref: '#/components/schemas/actor'
    *   post:
    *      description: Create a new actors
    *      tags: [Actors]
@@ -39,14 +39,14 @@ export const actorRoutes = (app) => {
    *        content:
    *          application/json:
    *            schema:
-   *              $ref: '#/components/schemas/actors'
+   *              $ref: '#/components/schemas/actor'
    *      responses:
    *        201:
    *          description: The actor was successfully created
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/actors'
+   *                $ref: '#/components/schemas/actor'
    */
   app.route('/v1/actors').get(find_all_actors).post(create_an_actor);
 
@@ -131,7 +131,7 @@ export const actorRoutes = (app) => {
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: '#/components/schemas/actor'
+   *               $ref: '#/components/schemas/actors'
    */
   app.route('/v1/actors/:actorId/ban').patch(ban_an_actor);
 
@@ -152,7 +152,7 @@ export const actorRoutes = (app) => {
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: '#/components/schemas/actor'
+   *               $ref: '#/components/schemas/actors'
    */
   app.route('/v1/actors/:actorId/unban').patch(unban_an_actor);
 };
