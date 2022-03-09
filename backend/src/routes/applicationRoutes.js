@@ -5,7 +5,9 @@ import {
   updateApplication,
   deleteApplication,
   cancelApplication,
-  payApplication
+  payApplication,
+  acceptApplication,
+  rejectApplication
 } from '../controllers/applicationController.js';
 
 export const applicationRoutes = (app) => {
@@ -155,4 +157,6 @@ export const applicationRoutes = (app) => {
    *               $ref: '#/components/schemas/application'
    */
   app.route('/v1/applications/:applicationId/pay').patch(payApplication);
+  app.route('/v1/applications/:applicationId/accept').patch(acceptApplication);
+  app.route('/v1/applications/:applicationId/reject').patch(rejectApplication);
 };
