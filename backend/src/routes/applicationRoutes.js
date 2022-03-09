@@ -157,6 +157,46 @@ export const applicationRoutes = (app) => {
    *               $ref: '#/components/schemas/application'
    */
   app.route('/v1/applications/:applicationId/pay').patch(payApplication);
+
+  /**
+   * @openapi
+   * /v1/applications/{applicationId}/accept:
+   *   patch:
+   *     description: Accept an application
+   *     tags: [Applications]
+   *     parameters:
+   *       - name: applicationId
+   *         type: string
+   *         in: path
+   *         required: true
+   *     responses:
+   *       200:
+   *         description: The accepted application description by id
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/application'
+   */
   app.route('/v1/applications/:applicationId/accept').patch(acceptApplication);
+
+  /**
+   * @openapi
+   * /v1/applications/{applicationId}/reject:
+   *   patch:
+   *     description: Reject an application
+   *     tags: [Applications]
+   *     parameters:
+   *       - name: applicationId
+   *         type: string
+   *         in: path
+   *         required: true
+   *     responses:
+   *       200:
+   *         description: The rejected application description by id
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/application'
+   */
   app.route('/v1/applications/:applicationId/reject').patch(rejectApplication);
 };
