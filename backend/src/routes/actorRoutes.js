@@ -8,7 +8,7 @@ import {
   unban_an_actor
 } from '../controllers/actorController.js';
 import { verifyUser } from '../controllers/authController.js';
-import Roles from '../shared/enums.js';
+import { Roles } from '../shared/enums.js';
 
 export const actorRoutes = (app) => {
   /**
@@ -50,7 +50,7 @@ export const actorRoutes = (app) => {
    *              schema:
    *                $ref: '#/components/schemas/actor'
    */
-  app.route('/v1/actors').get(verifyUser([Roles.ADMIN]), find_all_actors).post(verifyUser([Roles.ADMIN]), create_an_actor);
+  app.route('/v1/actors').get(verifyUser([Roles.ADMIN]), find_all_actors).post(create_an_actor);
 
   /**
    * @openapi

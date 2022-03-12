@@ -1,5 +1,6 @@
 import { actorModel } from '../models/actorModel.js';
 import { BasicState } from '../shared/enums.js';
+import admin from 'firebase-admin';
 
 export const find_all_actors = (req, res) => {
   actorModel.find({}, (err, actors) => {
@@ -97,4 +98,44 @@ export const unban_an_actor = (req, res) => {
       }
     }
   );
+};
+
+export const login_an_actor = async (req, res) => {
+  const email = req.query.email;
+  const password = req.query.password;
+
+  let customToken;
+
+  actorModel.findOne({ email }, (err, actor) => {
+    console.log("Actor", actor);
+    if (err) {
+      res.send(err);
+    } else if (!actor) {
+      res.status(401);
+      res.json({ message: 'forbidden', error: err });
+    } else if (actor.role.includes('CLERK') && actor.validated === false) {
+      // an access token is valid, but requires more privileges
+      res.status(403);
+      res.json({ message: 'forbidden', error: err });
+    } else {
+      // Make sure the password is correct
+      actor.verifyPassword(password, async (err, isMatch) => {
+        if (err) {
+          res.send(err);
+        } else if (!isMatch) {
+          // Password did not match
+          res.status(401); // an access token isn’t provided, or is invalid
+          res.json({ message: 'forbidden', error: err });
+        } else {
+          try {
+            customToken = await admin.auth().createCustomToken(actor.email);
+          } catch (error) {
+            console.log('Error creating custom token:', error);
+          }
+          actor.customToken = customToken;
+          res.json(actor);
+        }
+      });
+    }
+  });
 };

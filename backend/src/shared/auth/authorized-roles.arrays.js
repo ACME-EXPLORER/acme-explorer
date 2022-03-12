@@ -7,12 +7,19 @@ export const EXPLORER = [
 
 export const MANAGER = [
     Roles.ADMIN,
-    Roles.EXPLORER
+    Roles.MANAGER
 ];
 
 export const SPONSOR = [
     Roles.ADMIN,
     Roles.SPONSOR
+];
+
+export const ALL_ROLES = [
+    Roles.ADMIN,
+    Roles.EXPLORER,
+    Roles.SPONSOR,
+    Roles.MANAGER
 ];
 
 
