@@ -5,3 +5,4 @@ export * from './sponsorshipRoutes.js';
 export * from './tripRoutes.js';
 export * from './loginRoutes.js';
 export * from './dashboardRoutes.js';
+export * from './registerRoutes.js';
