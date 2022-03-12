@@ -1,11 +1,11 @@
 import {
-  find_all_actors,
-  create_an_actor,
-  find_an_actor,
-  update_an_actor,
-  delete_an_actor,
-  ban_an_actor,
-  unban_an_actor
+  findActors,
+  createActor,
+  findActor,
+  updateActor,
+  deleteActor,
+  banActor,
+  unbanActor
 } from '../controllers/actorController.js';
 import { verifyUser } from '../controllers/authController.js';
 import { Roles } from '../shared/enums.js';
@@ -50,7 +50,7 @@ export const actorRoutes = (app) => {
    *              schema:
    *                $ref: '#/components/schemas/actor'
    */
-  app.route('/v1/actors').get(verifyUser([Roles.ADMIN]), find_all_actors).post(create_an_actor);
+  app.route('/v1/actors').get(verifyUser([Roles.ADMIN]), findActors).post(createActor);
 
   /**
    * @openapi
@@ -114,7 +114,7 @@ export const actorRoutes = (app) => {
    *       404:
    *         description: The actor was not found
    */
-  app.route('/v1/actors/:actorId').get(verifyUser([Roles.ADMIN]), find_an_actor).put(update_an_actor).delete(verifyUser([Roles.ADMIN]), delete_an_actor);
+  app.route('/v1/actors/:actorId').get(verifyUser([Roles.ADMIN]), findActor).put(updateActor).delete(verifyUser([Roles.ADMIN]), deleteActor);
 
   /**
    * @openapi
@@ -135,7 +135,7 @@ export const actorRoutes = (app) => {
    *             schema:
    *               $ref: '#/components/schemas/actors'
    */
-  app.route('/v1/actors/:actorId/ban').patch(verifyUser([Roles.ADMIN]), ban_an_actor);
+  app.route('/v1/actors/:actorId/ban').patch(verifyUser([Roles.ADMIN]), banActor);
 
   /**
    * @openapi
@@ -156,5 +156,5 @@ export const actorRoutes = (app) => {
    *             schema:
    *               $ref: '#/components/schemas/actors'
    */
-  app.route('/v1/actors/:actorId/unban').patch(verifyUser([Roles.ADMIN]), unban_an_actor);
+  app.route('/v1/actors/:actorId/unban').patch(verifyUser([Roles.ADMIN]), unbanActor);
 };

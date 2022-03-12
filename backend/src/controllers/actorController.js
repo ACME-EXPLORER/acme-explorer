@@ -2,7 +2,7 @@ import { actorModel } from '../models/actorModel.js';
 import { BasicState } from '../shared/enums.js';
 import admin from 'firebase-admin';
 
-export const find_all_actors = (req, res) => {
+export const findActors = (req, res) => {
   actorModel.find({}, (err, actors) => {
     if (err) {
       res.status(500).send(err);
@@ -12,7 +12,7 @@ export const find_all_actors = (req, res) => {
   });
 };
 
-export const find_an_actor = (req, res) => {
+export const findActor = (req, res) => {
   actorModel.findById(req.params.actorId, (err, actor) => {
     if (err) {
       res.status(500).send(err);
@@ -22,7 +22,7 @@ export const find_an_actor = (req, res) => {
   });
 };
 
-export const create_an_actor = (req, res) => {
+export const createActor = (req, res) => {
   const newActor = new actorModel(req.body);
 
   newActor.save((err, actor) => {
@@ -38,7 +38,7 @@ export const create_an_actor = (req, res) => {
   });
 };
 
-export const update_an_actor = (req, res) => {
+export const updateActor = (req, res) => {
   actorModel.findOneAndUpdate({ _id: req.params.actorId }, req.body, { new: true }, (err, actor) => {
     if (err) {
       if (err.name === 'ValidationError') {
@@ -52,7 +52,7 @@ export const update_an_actor = (req, res) => {
   });
 };
 
-export const delete_an_actor = (req, res) => {
+export const deleteActor = (req, res) => {
   actorModel.deleteOne({ _id: req.params.actorId }, (err, actor) => {
     if (err) {
       res.status(500).send(err);
@@ -62,7 +62,7 @@ export const delete_an_actor = (req, res) => {
   });
 };
 
-export const ban_an_actor = (req, res) => {
+export const banActor = (req, res) => {
   actorModel.findOneAndUpdate(
     { _id: req.params.actorId },
     { state: BasicState.INACTIVE },
@@ -81,7 +81,7 @@ export const ban_an_actor = (req, res) => {
   );
 };
 
-export const unban_an_actor = (req, res) => {
+export const unbanActor = (req, res) => {
   actorModel.findOneAndUpdate(
     { _id: req.params.actorId },
     { state: BasicState.ACTIVE },
