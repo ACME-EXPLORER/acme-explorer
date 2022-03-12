@@ -47,9 +47,7 @@ const ActorSchema = new Schema(
     },
     idToken: {
       type: String
-    },
-    createdAt: String,
-    updatedAt: String
+    }
   },
   {
     timestamps: true

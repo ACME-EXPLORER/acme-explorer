@@ -5,7 +5,8 @@ import {
   updateActor,
   deleteActor,
   banActor,
-  unbanActor
+  unbanActor,
+  self
 } from '../controllers/actorController.js';
 import { verifyUser } from '../controllers/authController.js';
 import { Roles } from '../shared/enums.js';
@@ -158,4 +159,22 @@ export const actorRoutes = (app) => {
    *               $ref: '#/components/schemas/actors'
    */
   app.route('/v1/actors/:actorId/unban').patch(verifyUser([Roles.ADMIN]), unbanActor);
+
+   /**
+   * @openapi
+   * /v1/self:
+   *   get:
+   *     description: Get current actor
+   *     tags: [Actors]
+   *     responses:
+   *       200:
+   *         description: Return current user
+   *         content:
+   *           application/json:
+   *            schema:
+   *              $ref: '#/components/schemas/actor'
+   *       404:
+   *         description: The actor was not found
+   */
+  app.route('/v1/self').get(self);
 };

@@ -1,4 +1,4 @@
-import Roles from '../enums.js';
+import { Roles } from '../enums.js';
 
 export const EXPLORER = [
     Roles.ADMIN,

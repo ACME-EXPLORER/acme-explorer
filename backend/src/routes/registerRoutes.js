@@ -4,13 +4,13 @@ export const registerRoutes = (app) => {
   /**
    * @openapi
    * tags:
-   *  name: Register
-   *  description: Managing register endpoint
+   *  name: Registers
+   *  description: Managing Registers endpoint
    */
 
   /**
    * @openapi
-   * /v1/register/:
+   * /v1/register:
    *   post:
    *      description: Create a new actors
    *      tags: [Registers]
@@ -29,5 +29,5 @@ export const registerRoutes = (app) => {
    *                $ref: '#/components/schemas/actor'
    *
    */
-  app.route('/v1/register/').get(register);
+  app.route('/v1/register').post(register);
 };

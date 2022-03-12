@@ -1,18 +1,18 @@
 import admin from 'firebase-admin';
 import { actorModel } from '../models/actorModel.js';
 
-export const getUserId = async (idToken) => {
+export const currentUser = async (idToken) => {
   const actorFromFB = await admin.auth().verifyIdToken(idToken);
 
   const uid = actorFromFB.uid;
 
   const actor = await actorModel.findOne({ email: uid });
 
-  if (!mongoActor) {
+  if (!actor) {
     return null;
   } 
 
-  return actor._id;
+  return actor;
 };
 
 export const verifyUser = (authorizedRoles) => {

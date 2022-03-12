@@ -1,6 +1,7 @@
 import { actorModel } from '../models/actorModel.js';
 import { BasicState } from '../shared/enums.js';
 import admin from 'firebase-admin';
+import { currentUser } from './authController.js';
 
 export const findActors = (req, res) => {
   actorModel.find({}, (err, actors) => {
@@ -38,18 +39,41 @@ export const createActor = (req, res) => {
   });
 };
 
-export const updateActor = (req, res) => {
-  actorModel.findOneAndUpdate({ _id: req.params.actorId }, req.body, { new: true }, (err, actor) => {
-    if (err) {
-      if (err.name === 'ValidationError') {
-        res.status(422).send(err);
-      } else {
-        res.status(500).send(err);
-      }
-    } else {
-      res.json(actor);
+export const updateActor = async (req, res) => {
+  try {
+    const idToken = req.headers.idtoken;
+    const user = await currentUser(idToken);
+    let access = false;
+
+    if (!user) {
+      res.status(401).send('Not authorized');
     }
-  });
+
+    if(user.role === Roles.ADMIN) {
+       access = true;
+    } else if ( user.id === req.params.actorId) {
+       access = true;
+    } else {
+      res.status(403).send('The Actor is trying to update an Actor that is not himself!');
+    }
+    
+    if (access) {
+      actorModel.findOneAndUpdate({ _id: req.params.actorId }, req.body, { new: true }, (err, actor) => {
+        if (err) {
+          if (err.name === 'ValidationError') {
+            res.status(422).send(err);
+          } else {
+            res.status(500).send(err);
+          }
+        } else {
+          res.json(actor);
+        }
+      });
+    }
+    res.status(405).send('You cannot perform this operation');
+  } catch(err) {
+    res.status(500).send(err);
+  }
 };
 
 export const deleteActor = (req, res) => {
@@ -148,4 +172,20 @@ export const register = async (req, res) => {
       res.json(actor);
     }
   });
+};
+
+export const self = async (req, res) => {
+  try {
+    const idToken = req.headers.idtoken;
+    const user = await currentUser(idToken);
+
+    if(!user) {
+      res.status(404).send('Not found');
+    }
+
+    res.send(user);
+  } catch(err) {
+    console.log(err);
+    res.status(500).send(err);
+  }
 };
