@@ -53,17 +53,17 @@ const ActorSchema = new Schema(
   },
   {
     timestamps: true
-  }, 
-  {
-    toJSON: {
-      transform(doc, ret) {
-        ret.id = ret._id;
-        delete ret._id;
-        delete ret.password;
-      },
-    },
   }
 );
+
+ActorSchema.set('toJSON', {
+  transform: function(doc, ret) {
+    ret.id = ret._id;
+    delete ret._id;
+    delete ret.password;
+    delete ret.__v;
+  }
+});
 
 ActorSchema.pre('save', function(next) {
   const actor = this;

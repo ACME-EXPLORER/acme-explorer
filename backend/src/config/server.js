@@ -15,7 +15,8 @@ import {
   dashboardRoutes,
   sponsorshipRoutes,
   finderRoutes,
-  loginRoutes
+  loginRoutes,
+  registerRoutes
 } from '../routes/index.js';
 
 export class Server {
@@ -48,6 +49,7 @@ export class Server {
     tripRoutes(this.app);
     dashboardRoutes(this.app);
     loginRoutes(this.app);
+    registerRoutes(this.app);
 
     this.app.use(errorHandler);
 

@@ -9,6 +9,7 @@ import {
 } from '../controllers/actorController.js';
 import { verifyUser } from '../controllers/authController.js';
 import { Roles } from '../shared/enums.js';
+import { ALL_ROLES } from '../shared/auth/authorized-roles.arrays.js';
 
 export const actorRoutes = (app) => {
   /**
@@ -50,7 +51,7 @@ export const actorRoutes = (app) => {
    *              schema:
    *                $ref: '#/components/schemas/actor'
    */
-  app.route('/v1/actors').get(verifyUser([Roles.ADMIN]), findActors).post(createActor);
+  app.route('/v1/actors').get(verifyUser([Roles.ADMIN]), findActors).post(verifyUser([Roles.ADMIN]), createActor);
 
   /**
    * @openapi
@@ -114,7 +115,7 @@ export const actorRoutes = (app) => {
    *       404:
    *         description: The actor was not found
    */
-  app.route('/v1/actors/:actorId').get(verifyUser([Roles.ADMIN]), findActor).put(updateActor).delete(verifyUser([Roles.ADMIN]), deleteActor);
+  app.route('/v1/actors/:actorId').get(verifyUser([Roles.ADMIN]), findActor).put(verifyUser([ALL_ROLES]), updateActor).delete(verifyUser([Roles.ADMIN]), deleteActor);
 
   /**
    * @openapi

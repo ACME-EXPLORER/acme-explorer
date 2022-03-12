@@ -1,4 +1,4 @@
-import { login_an_actor } from '../controllers/actorController.js';
+import { login } from '../controllers/actorController.js';
 
 export const loginRoutes = (app) => {
   /**
@@ -34,5 +34,5 @@ export const loginRoutes = (app) => {
    *              $ref: '#/components/schemas/actor'
    *
    */
-  app.route('/v1/login/').get(login_an_actor);
+  app.route('/v1/login/').get(login);
 };

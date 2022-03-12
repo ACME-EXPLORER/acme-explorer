@@ -100,42 +100,52 @@ export const unbanActor = (req, res) => {
   );
 };
 
-export const login_an_actor = async (req, res) => {
+export const login = async (req, res) => {
   const email = req.query.email;
   const password = req.query.password;
 
-  let customToken;
-
   actorModel.findOne({ email }, (err, actor) => {
-    console.log("Actor", actor);
     if (err) {
       res.send(err);
     } else if (!actor) {
-      res.status(401);
-      res.json({ message: 'forbidden', error: err });
-    } else if (actor.role.includes('CLERK') && actor.validated === false) {
-      // an access token is valid, but requires more privileges
-      res.status(403);
-      res.json({ message: 'forbidden', error: err });
+      res.status(401).send({ message: 'forbidden', error: err });
     } else {
       // Make sure the password is correct
       actor.verifyPassword(password, async (err, isMatch) => {
         if (err) {
           res.send(err);
-        } else if (!isMatch) {
-          // Password did not match
-          res.status(401); // an access token isn’t provided, or is invalid
-          res.json({ message: 'forbidden', error: err });
-        } else {
-          try {
-            customToken = await admin.auth().createCustomToken(actor.email);
-          } catch (error) {
-            console.log('Error creating custom token:', error);
-          }
-          actor.customToken = customToken;
+        }    
+        if (!isMatch) {
+          res.status(401).send({ message: 'forbidden', error: err }); 
+        } 
+        try {
+          actor.customToken = await admin.auth().createCustomToken(actor.email);
           res.json(actor);
+        } catch (error) {
+          res.status(500).send(error);
         }
       });
+    }
+  });
+};
+
+export const register = async (req, res) => {
+  delete req.body.role;
+  delete req.body.state;
+  delete req.body.customToken;
+  delete req.body.idToken;
+
+  const newActor = new actorModel(req.body);
+
+  newActor.save((err, actor) => {
+    if (err) {
+      if (err.name === 'ValidationError') {
+        res.status(422).send(err);
+      } else {
+        res.status(500).send(err);
+      }
+    } else {
+      res.json(actor);
     }
   });
 };
