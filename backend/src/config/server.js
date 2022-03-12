@@ -1,6 +1,7 @@
 import bodyParser from 'body-parser';
 import express from 'express';
 import admin from 'firebase-admin';
+import cors from 'cors';
 import swaggerUI from 'swagger-ui-express';
 import { swaggerSpec } from './swagger.js';
 import { dbConnection, dbClose } from './database.js';
@@ -32,6 +33,7 @@ export class Server {
   }
 
   middlewares() {
+    this.app.use(cors());
     this.app.use(bodyParser.urlencoded({ extended: true }));
     this.app.use(bodyParser.json());
 
