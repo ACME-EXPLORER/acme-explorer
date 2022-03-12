@@ -1,26 +1,34 @@
 import bodyParser from 'body-parser';
 import express from 'express';
+import admin from 'firebase-admin';
 import swaggerUI from 'swagger-ui-express';
 import { swaggerSpec } from './swagger.js';
 import { dbConnection, dbClose } from './database.js';
-import { actorRoutes } from '../routes/actorRoutes.js';
-import { finderRoutes } from '../routes/finderRoutes.js';
-import { applicationRoutes } from '../routes/applicationRoutes.js';
-import { sponsorshipRoutes } from '../routes/sponsorshipRoutes.js';
-import { tripRoutes } from '../routes/tripRoutes.js';
 import { redisConnection, redisClose } from './redis.js';
-import { dashboardRoutes } from '../routes/dashboardRoutes.js';
 import { StatusCodes } from 'http-status-codes';
 import { errorHandler } from '../shared/middlewares/error-handler.js';
+import {
+  actorRoutes,
+  applicationRoutes,
+  tripRoutes,
+  dashboardRoutes,
+  sponsorshipRoutes,
+  finderRoutes,
+  loginRoutes
+} from '../routes/index.js';
 
 export class Server {
   constructor() {
     this.app = express();
-
     this.port = process.env.PORT || 8080;
+    this.serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT);
 
     dbConnection();
     redisConnection();
+
+    admin.initializeApp({
+      credential: admin.credential.cert(this.serviceAccount)
+    });
   }
 
   middlewares() {
@@ -37,6 +45,7 @@ export class Server {
     sponsorshipRoutes(this.app);
     tripRoutes(this.app);
     dashboardRoutes(this.app);
+    loginRoutes(this.app);
 
     this.app.use(errorHandler);
 
