@@ -47,7 +47,7 @@ const ActorSchema = new Schema(
     },
     idToken: {
       type: String
-    },
+    }
   },
   {
     timestamps: true
@@ -65,7 +65,7 @@ ActorSchema.set('toJSON', {
 
 ActorSchema.pre('save', function(next) {
   const actor = this;
-  console.log('Actor', actor);
+
   bcrypt.genSalt(6, (err, salt) => {
     if (err) return next(err);
 
@@ -77,10 +77,10 @@ ActorSchema.pre('save', function(next) {
   });
 });
 
-ActorSchema.pre('findOneAndUpdate',function(next) {
+ActorSchema.pre('findOneAndUpdate', function(next) {
   const actor = this._update;
 
-  if (!actor.isModified('password')) return callback();
+  if (!actor.password) return next();
 
   bcrypt.genSalt(6, (err, salt) => {
     if (err) return next(err);
@@ -95,9 +95,9 @@ ActorSchema.pre('findOneAndUpdate',function(next) {
 
 ActorSchema.methods.verifyPassword = function(password, cb) {
   bcrypt.compare(password, this.password, function(err, isMatch) {
-    if (err) return cb(err)
-    cb(null, isMatch)
-  })
-}
+    if (err) return cb(err);
+    cb(null, isMatch);
+  });
+};
 
 export const actorModel = mongoose.model('Actor', ActorSchema);
