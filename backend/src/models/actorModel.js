@@ -41,7 +41,13 @@ const ActorSchema = new Schema(
       type: String,
       enum: Object.values(BasicState),
       default: BasicState.ACTIVE
-    }
+    },
+    customToken: {
+      type: String
+    },
+    idToken: {
+      type: String
+    },
   },
   {
     timestamps: true

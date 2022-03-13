@@ -1,7 +1,6 @@
 import { actorModel } from '../models/actorModel.js';
 import { BasicState } from '../shared/enums.js';
 import admin from 'firebase-admin';
-import { currentUser } from './authController.js';
 import { StatusCodes } from 'http-status-codes';
 
 export const findActors = (req, res) => {
@@ -42,17 +41,18 @@ export const createActor = (req, res) => {
 
 export const updateActor = async (req, res) => {
   try {
-    const idToken = req.headers.idtoken;
-    const user = await currentUser(idToken);
+    
+    const { actor } = res.locals;
+
     let access = false;
 
-    if (!user) {
+    if (!actor) {
       res.status(StatusCodes.UNAUTHORIZED).send('Not authorized');
     }
 
-    if(user.role === Roles.ADMIN) {
+    if(actor.role === Roles.ADMIN) {
        access = true;
-    } else if ( user.id === req.params.actorId) {
+    } else if ( actor.id === req.params.actorId) {
        access = true;
     } else {
       res.status(StatusCodes.FORBIDDEN).send('The Actor is trying to update an Actor that is not himself!');
@@ -126,8 +126,7 @@ export const unbanActor = (req, res) => {
 };
 
 export const login = async (req, res) => {
-  const email = req.query.email;
-  const password = req.query.password;
+  const {email, password} = req.query;
 
   actorModel.findOne({ email }, (err, actor) => {
     if (err) {
@@ -177,14 +176,13 @@ export const register = async (req, res) => {
 
 export const self = async (req, res) => {
   try {
-    const idToken = req.headers.idtoken;
-    const user = await currentUser(idToken);
+    const { actor } = res.locals;
 
-    if(!user) {
+    if(!actor) {
       res.status(StatusCodes.NOT_FOUND).send('Not found');
     }
 
-    res.send(user);
+    res.send(actor);
   } catch(err) {
     console.log(err);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(err);

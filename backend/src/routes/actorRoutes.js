@@ -176,5 +176,5 @@ export const actorRoutes = (app) => {
    *       404:
    *         description: The actor was not found
    */
-  app.route('/v1/self').get(self);
+  app.route('/v1/self').get(verifyUser(ALL_ROLES), self);
 };

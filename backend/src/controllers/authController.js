@@ -24,12 +24,13 @@ export const verifyUser = (authorizedRoles) => {
       .auth()
       .verifyIdToken(idToken)
       .then((decodedToken) => {
+
         const uid = decodedToken.uid;
         actorModel.findOne({ email: uid }, (err, actor) => {
           if (err) {
             res.send(err);
           } 
-          
+        
           if (!actor) {
             res.status(StatusCodes.UNAUTHORIZED).send({ message: 'forbidden', error: err });
           } 
@@ -40,6 +41,7 @@ export const verifyUser = (authorizedRoles) => {
           if (isAuth) {
             res.locals.idToken = idToken;
             res.locals.actor = actor;
+            console.log(res.locals)
             return next(null, actor);
           } 
 
