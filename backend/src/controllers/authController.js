@@ -38,6 +38,8 @@ export const verifyUser = (authorizedRoles) => {
           const isAuth = authorizedRolesSet.has(actor.role);
 
           if (isAuth) {
+            res.locals.idToken = idToken;
+            res.locals.actor = actor;
             return next(null, actor);
           } 
 
