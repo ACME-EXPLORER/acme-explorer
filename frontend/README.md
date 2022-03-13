@@ -1,34 +1,31 @@
-# AcmeSupermarket
+# Acme-Explorer frontend
+
+> Provides capability to serve the frontend static files for the single page app.
+
+* [![Build Status](https://github.com/acme-explorer/acme-explorer/workflows/CI%20Frontend/badge.svg)](https://github.com/acme-explorer/acme-explorer/actions)
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.2.4.
 
-Setup:
-npm install
-npm install -g @angular/cli
 
-- FireBase Project
-copy project configuration en app.module.ts
+## System requirements
 
-## Development server
+* Node.js 16.0+
+* Angular CLI 6.0+
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## Dev Instructions
 
-## Code scaffolding
+1. Clone repository:
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+   Assuming you have `git` installed and available in your shell's path, run: `git clone <repository>`.
 
-## Build
+2. Install project requirements in the project root directory.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+   ```sh
+   npm install && npm install -g @angular/cli
+   ```
 
-## Running unit tests
+3. Start the dev web server
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+   ```sh
+   ng serve
+   ```
