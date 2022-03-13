@@ -116,7 +116,8 @@ export const actorRoutes = (app) => {
    *       404:
    *         description: The actor was not found
    */
-  app.route('/v1/actors/:actorId').get(verifyUser([Roles.ADMIN]), findActor).put(verifyUser([ALL_ROLES]), updateActor).delete(verifyUser([Roles.ADMIN]), deleteActor);
+  app.route('/v1/actors/:actorId').get(verifyUser([Roles.ADMIN]), findActor).put(verifyUser(ALL_ROLES), updateActor)
+  .delete(verifyUser([Roles.ADMIN]), deleteActor);
 
   /**
    * @openapi
@@ -160,7 +161,7 @@ export const actorRoutes = (app) => {
    */
   app.route('/v1/actors/:actorId/unban').patch(verifyUser([Roles.ADMIN]), unbanActor);
 
-   /**
+  /**
    * @openapi
    * /v1/self:
    *   get:
