@@ -1,5 +1,6 @@
 import admin from 'firebase-admin';
 import { actorModel } from '../models/actorModel.js';
+import { StatusCodes } from 'http-status-codes';
 
 export const currentUser = async (idToken) => {
   const actorFromFB = await admin.auth().verifyIdToken(idToken);
@@ -30,8 +31,7 @@ export const verifyUser = (authorizedRoles) => {
           } 
           
           if (!actor) {
-            res.status(401);
-            res.json({ message: 'Actor not found', error: err });
+            res.status(StatusCodes.UNAUTHORIZED).send({ message: 'forbidden', error: err });
           } 
             
           const authorizedRolesSet = new Set(authorizedRoles);
@@ -41,13 +41,12 @@ export const verifyUser = (authorizedRoles) => {
             return next(null, actor);
           } 
 
-          res.status(403); 
-          res.json({ message: 'Not authorized', error: err });     
+          res.status(StatusCodes.FORBIDDEN).send({ message: 'forbidden', error: err }); 
+ 
         });
       })
       .catch((err) => {
-        res.status(403); 
-        res.json({ message: 'Not authorized', error: err });
+        res.status(StatusCodes.FORBIDDEN).send({ message: 'forbidden', error: err }); 
       });
   };
 };

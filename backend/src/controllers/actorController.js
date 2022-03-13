@@ -2,6 +2,7 @@ import { actorModel } from '../models/actorModel.js';
 import { BasicState } from '../shared/enums.js';
 import admin from 'firebase-admin';
 import { currentUser } from './authController.js';
+import { StatusCodes } from 'http-status-codes';
 
 export const findActors = (req, res) => {
   actorModel.find({}, (err, actors) => {
@@ -16,7 +17,7 @@ export const findActors = (req, res) => {
 export const findActor = (req, res) => {
   actorModel.findById(req.params.actorId, (err, actor) => {
     if (err) {
-      res.status(500).send(err);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(err);
     } else {
       res.json(actor);
     }
@@ -29,9 +30,9 @@ export const createActor = (req, res) => {
   newActor.save((err, actor) => {
     if (err) {
       if (err.name === 'ValidationError') {
-        res.status(422).send(err);
+        res.status(StatusCodes.UNPROCESSABLE_ENTITY).send(err);
       } else {
-        res.status(500).send(err);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(err);
       }
     } else {
       res.json(actor);
@@ -46,7 +47,7 @@ export const updateActor = async (req, res) => {
     let access = false;
 
     if (!user) {
-      res.status(401).send('Not authorized');
+      res.status(StatusCodes.UNAUTHORIZED).send('Not authorized');
     }
 
     if(user.role === Roles.ADMIN) {
@@ -54,32 +55,32 @@ export const updateActor = async (req, res) => {
     } else if ( user.id === req.params.actorId) {
        access = true;
     } else {
-      res.status(403).send('The Actor is trying to update an Actor that is not himself!');
+      res.status(StatusCodes.FORBIDDEN).send('The Actor is trying to update an Actor that is not himself!');
     }
     
     if (access) {
       actorModel.findOneAndUpdate({ _id: req.params.actorId }, req.body, { new: true }, (err, actor) => {
         if (err) {
           if (err.name === 'ValidationError') {
-            res.status(422).send(err);
+            res.status(StatusCodes.UNPROCESSABLE_ENTITY).send(err);
           } else {
-            res.status(500).send(err);
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(err);
           }
         } else {
           res.json(actor);
         }
       });
     }
-    res.status(405).send('You cannot perform this operation');
+    res.status(StatusCodes.METHOD_NOT_ALLOWED).send('You cannot perform this operation');
   } catch(err) {
-    res.status(500).send(err);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(err);
   }
 };
 
 export const deleteActor = (req, res) => {
   actorModel.deleteOne({ _id: req.params.actorId }, (err, actor) => {
     if (err) {
-      res.status(500).send(err);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(err);
     } else {
       res.json({ message: 'Actor successfully deleted' });
     }
@@ -94,9 +95,9 @@ export const banActor = (req, res) => {
     (err, actor) => {
       if (err) {
         if (err.name === 'ValidationError') {
-          res.status(422).send(err);
+          res.status(StatusCodes.UNPROCESSABLE_ENTITY).send(err);
         } else {
-          res.status(500).send(err);
+          res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(err);
         }
       } else {
         res.json(actor);
@@ -113,9 +114,9 @@ export const unbanActor = (req, res) => {
     (err, actor) => {
       if (err) {
         if (err.name === 'ValidationError') {
-          res.status(422).send(err);
+          res.status(StatusCodes.UNPROCESSABLE_ENTITY).send(err);
         } else {
-          res.status(500).send(err);
+          res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(err);
         }
       } else {
         res.json(actor);
@@ -132,7 +133,7 @@ export const login = async (req, res) => {
     if (err) {
       res.send(err);
     } else if (!actor) {
-      res.status(401).send({ message: 'forbidden', error: err });
+      res.status(StatusCodes.UNAUTHORIZED).send({ message: 'forbidden', error: err });
     } else {
       // Make sure the password is correct
       actor.verifyPassword(password, async (err, isMatch) => {
@@ -140,13 +141,13 @@ export const login = async (req, res) => {
           res.send(err);
         }    
         if (!isMatch) {
-          res.status(401).send({ message: 'forbidden', error: err }); 
+          res.status(StatusCodes.UNAUTHORIZED).send({ message: 'forbidden', error: err }); 
         } 
         try {
           actor.customToken = await admin.auth().createCustomToken(actor.email);
           res.json(actor);
         } catch (error) {
-          res.status(500).send(error);
+          res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
         }
       });
     }
@@ -164,9 +165,9 @@ export const register = async (req, res) => {
   newActor.save((err, actor) => {
     if (err) {
       if (err.name === 'ValidationError') {
-        res.status(422).send(err);
+        res.status(StatusCodes.UNPROCESSABLE_ENTITY).send(err);
       } else {
-        res.status(500).send(err);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(err);
       }
     } else {
       res.json(actor);
@@ -180,12 +181,12 @@ export const self = async (req, res) => {
     const user = await currentUser(idToken);
 
     if(!user) {
-      res.status(404).send('Not found');
+      res.status(StatusCodes.NOT_FOUND).send('Not found');
     }
 
     res.send(user);
   } catch(err) {
     console.log(err);
-    res.status(500).send(err);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(err);
   }
 };
