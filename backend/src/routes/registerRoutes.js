@@ -4,7 +4,7 @@ export const registerRoutes = (app) => {
   /**
    * @openapi
    * tags:
-   *  name: Registers
+   *  name: Register
    *  description: Managing Registers endpoint
    */
 
@@ -13,7 +13,7 @@ export const registerRoutes = (app) => {
    * /v1/register:
    *   post:
    *      description: Create a new actors
-   *      tags: [Registers]
+   *      tags: [Register]
    *      requestBody:
    *        required: true
    *        content:
