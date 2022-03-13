@@ -41,24 +41,13 @@ export const createActor = (req, res) => {
 
 export const updateActor = async (req, res) => {
   try {
-    
     const { actor } = res.locals;
-
-    let access = false;
 
     if (!actor) {
       res.status(StatusCodes.UNAUTHORIZED).send('Not authorized');
     }
 
-    if(actor.role === Roles.ADMIN) {
-       access = true;
-    } else if ( actor.id === req.params.actorId) {
-       access = true;
-    } else {
-      res.status(StatusCodes.FORBIDDEN).send('The Actor is trying to update an Actor that is not himself!');
-    }
-    
-    if (access) {
+    if (actor.role === Roles.ADMIN || actor.id === req.params.actorId) {
       actorModel.findOneAndUpdate({ _id: req.params.actorId }, req.body, { new: true }, (err, actor) => {
         if (err) {
           if (err.name === 'ValidationError') {
@@ -71,8 +60,9 @@ export const updateActor = async (req, res) => {
         }
       });
     }
+
     res.status(StatusCodes.METHOD_NOT_ALLOWED).send('You cannot perform this operation');
-  } catch(err) {
+  } catch (err) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(err);
   }
 };
@@ -126,7 +116,7 @@ export const unbanActor = (req, res) => {
 };
 
 export const login = async (req, res) => {
-  const {email, password} = req.query;
+  const { email, password } = req.query;
 
   actorModel.findOne({ email }, (err, actor) => {
     if (err) {
@@ -138,10 +128,10 @@ export const login = async (req, res) => {
       actor.verifyPassword(password, async (err, isMatch) => {
         if (err) {
           res.send(err);
-        }    
+        }
         if (!isMatch) {
-          res.status(StatusCodes.UNAUTHORIZED).send({ message: 'forbidden', error: err }); 
-        } 
+          res.status(StatusCodes.UNAUTHORIZED).send({ message: 'forbidden', error: err });
+        }
         try {
           actor.customToken = await admin.auth().createCustomToken(actor.email);
           res.json(actor);
@@ -178,12 +168,12 @@ export const self = async (req, res) => {
   try {
     const { actor } = res.locals;
 
-    if(!actor) {
+    if (!actor) {
       res.status(StatusCodes.NOT_FOUND).send('Not found');
     }
 
     res.send(actor);
-  } catch(err) {
+  } catch (err) {
     console.log(err);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(err);
   }
