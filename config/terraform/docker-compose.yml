@@ -3,7 +3,7 @@ version: '3.7'
 services:
   backend:
     container_name: acme-backend
-    image: josesandovalp/do2122-latam
+    image: ghcr.io/0aps/acme-backend
     ports:
       - '3000:3000'
     environment:
