@@ -110,7 +110,7 @@ dist
 .DS_Store
 
 # Kube
-kubertenes/secret.yml
+kubernetes/secret.yml
 
 # VSCode
 .vscode/
