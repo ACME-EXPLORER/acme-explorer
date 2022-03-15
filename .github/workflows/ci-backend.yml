@@ -19,8 +19,8 @@ env:
   DB_URI: ${{ secrets.DB_URI }}
   REDIS_URI: ${{ secrets.REDIS_URI }}
   SECRET: ${{ secrets.JWT_SECRET }}
-  GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT}}
-  FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY}}
+  GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+  FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
 
 defaults:
   run:
@@ -51,6 +51,45 @@ jobs:
           file: backend/Dockerfile
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/do2122-latam:latest
+
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./config/terraform
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: eu-west-3
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check
+        continue-on-error: true
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: terraform apply -auto-approve
 
   lint:
     name: Lint
