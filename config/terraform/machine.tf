@@ -1,3 +1,5 @@
+# EC2 instance configurations
+
 resource "tls_private_key" "pk" {
   algorithm = "RSA"
   rsa_bits  = 4096
@@ -40,7 +42,7 @@ resource "aws_instance" "machine01" {
       "sudo yum update -y",
       "sudo yum install -y docker httpd-tools git",
       "sudo usermod -a -G docker ec2-user",
-      "sudo curl -L https://github.com/docker/compose/releases/download/1.22.0-rc2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose",
+      "sudo curl -L https://github.com/docker/compose/releases/download/1.29.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose",
       "sudo chmod +x /usr/local/bin/docker-compose",
       "sudo chkconfig docker on",
       "sudo service docker start",
@@ -71,7 +73,8 @@ resource "aws_instance" "machine01" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo /usr/local/bin/docker-compose up gateway"
+      "sudo /usr/local/bin/docker-compose up -d gateway",
+      "docker exec -it frontend npm run build"
     ]
   }
 }
