@@ -1,8 +1,18 @@
+resource "tls_private_key" "pk" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "aws_key_pair" "kp" {
+  key_name   = "do2122-latam-key"       # Create a "myKey" to AWS!!
+  public_key = tls_private_key.pk.public_key_openssh
+}
+
 resource "aws_instance" "machine01" {
   ami                         = "ami-007fae589fdf6e955"
   instance_type               = "t2.micro"
   associate_public_ip_address = true
-  key_name                    = var.key_name
+  key_name                    = aws_key_pair.kp.key_name
   vpc_security_group_ids      = [aws_security_group.sg_do2122-latam.id]
 
   root_block_device {
@@ -22,7 +32,7 @@ resource "aws_instance" "machine01" {
     type        = "ssh"
     host        = self.public_ip
     user        = "ec2-user"
-    private_key = file(var.key_path)
+    private_key = tls_private_key.pk.private_key_pem
   }
 
   provisioner "remote-exec" {
@@ -34,8 +44,19 @@ resource "aws_instance" "machine01" {
       "sudo chmod +x /usr/local/bin/docker-compose",
       "sudo chkconfig docker on",
       "sudo service docker start",
-      "mkdir /home/ec2-user/config"
+      "mkdir /home/ec2-user/config",
+      "mkdir /home/ec2-user/frontend"
     ]
+  }
+
+  provisioner "file" {
+    source      = "../../backend"
+    destination = "/home/ec2-user"
+  }
+
+  provisioner "file" {
+    source      = "../../frontend/react"
+    destination = "/home/ec2-user/frontend"
   }
 
   provisioner "file" {
@@ -44,13 +65,13 @@ resource "aws_instance" "machine01" {
   }
 
   provisioner "file" {
-    source      = "docker-compose.yml"
+    source      = "../../docker-compose.yml"
     destination = "/home/ec2-user/docker-compose.yml"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "sudo /usr/local/bin/docker-compose up backend"
+      "sudo /usr/local/bin/docker-compose up gateway"
     ]
   }
 }
