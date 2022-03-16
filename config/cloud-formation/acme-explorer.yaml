@@ -53,7 +53,7 @@ Resources:
           export repositoryName=${RepositoryName}
           git clone $repository
           cd $repositoryName
-          docker-compose up -f docker-compose.yml -f docker-compose.prd.yml --build -d gateway
+          docker-compose -f docker-compose.yml -f docker-compose.prd.yml up --build -d gateway
           docker run -d --name portainer -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer-ce
   MyEIP:
     Type: 'AWS::EC2::EIP'
