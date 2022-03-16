@@ -46,7 +46,7 @@ Resources:
           git clone "https://<user>:<password>@github.com/acme-explorer/acme-explorer.git"
           cd acme-explorer
           docker-compose up --build -d gateway
-          sudo docker run -d --name portainer -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer-ce
+          docker run -d --name portainer -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer-ce
   MyEIP:
     Type: 'AWS::EC2::EIP'
     Properties:

@@ -6,4 +6,4 @@ RUN apk add --no-cache nodejs npm
 RUN npm install
 COPY . .
 COPY config/nginx-frontend.conf /etc/nginx/conf.d/
-RUN npm run build
+CMD ["npm", "run", "build"]
