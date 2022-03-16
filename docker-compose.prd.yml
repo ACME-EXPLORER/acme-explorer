@@ -1,0 +1,6 @@
+services:
+  frontend:
+    container_name: frontend
+    build:
+      context: frontend/react
+      dockerfile: Dockerfile
