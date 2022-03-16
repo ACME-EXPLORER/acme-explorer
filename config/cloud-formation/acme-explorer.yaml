@@ -3,6 +3,9 @@ Parameters:
     Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
     Type: 'AWS::EC2::KeyPair::KeyName'
     ConstraintDescription: must be the name of an existing EC2 KeyPair.
+  Repository:
+    Description: Url del repositorio
+    Type: String
 Resources:
   MySecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
@@ -43,10 +46,11 @@ Resources:
           sudo chmod +x /usr/local/bin/docker-compose
           sudo chkconfig docker on
           sudo service docker start
-          git clone "https://<user>:<password>@github.com/acme-explorer/acme-explorer.git"
+          export repository=${Repository}
+          git clone $repository
           cd acme-explorer
           docker-compose up --build -d gateway
-          docker run -d --name portainer -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer-ce
+          sudo docker run -d --name portainer -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer-ce
   MyEIP:
     Type: 'AWS::EC2::EIP'
     Properties:
