@@ -6,6 +6,9 @@ Parameters:
   Repository:
     Description: Url del repositorio
     Type: String
+  RepositoryName:
+    Description: Nombre del repositorio
+    Type: String
 Resources:
   MySecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
@@ -47,8 +50,9 @@ Resources:
           sudo chkconfig docker on
           sudo service docker start
           export repository=${Repository}
+          export repositoryName=${RepositoryName}
           git clone $repository
-          cd acme-explorer
+          cd $repositoryName
           docker-compose up --build -d gateway
           docker run -d --name portainer -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer-ce
   MyEIP:
