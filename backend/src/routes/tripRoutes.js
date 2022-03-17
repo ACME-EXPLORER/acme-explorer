@@ -1,4 +1,14 @@
-import { findTrips, createTrip, findTrip, updateTrip, deleteTrip, findMyTrips, publishTrip, cancelTrip } from '../controllers/tripController.js';
+import { 
+  findTrips, 
+  createTrip, 
+  findTrip, 
+  updateTrip, 
+  deleteTrip, 
+  findMyTrips, 
+  publishTrip, 
+  cancelTrip,
+  deleteStage
+ } from '../controllers/tripController.js';
 
 export const tripRoutes = app => {
   /**
@@ -123,4 +133,6 @@ export const tripRoutes = app => {
   app.route('/v1/trips/:tripId/publish').patch(publishTrip);
 
   app.route('/v1/trips/:tripId/cancel').patch(cancelTrip);
+
+  app.route('/v1/trips/:tripId/stages/:stageId').delete(deleteStage);
 };
