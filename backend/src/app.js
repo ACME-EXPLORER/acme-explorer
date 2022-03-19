@@ -7,4 +7,7 @@ const server = new Server();
 
 server.execute();
 
+import { createDataWareHouseJob } from './controllers/dataWareHouseController.js';
+createDataWareHouseJob();
+
 export default server;

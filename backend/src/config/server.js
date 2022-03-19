@@ -13,11 +13,11 @@ import {
   actorRoutes,
   applicationRoutes,
   tripRoutes,
-  dashboardRoutes,
   sponsorshipRoutes,
   finderRoutes,
   loginRoutes,
-  registerRoutes
+  registerRoutes,
+  dataWareHouseRoutes,
 } from '../routes/index.js';
 
 export class Server {
@@ -48,9 +48,9 @@ export class Server {
     applicationRoutes(this.app);
     sponsorshipRoutes(this.app);
     tripRoutes(this.app);
-    dashboardRoutes(this.app);
     loginRoutes(this.app);
     registerRoutes(this.app);
+    dataWareHouseRoutes(this.app);
 
     this.app.use(errorHandler);
 
@@ -84,6 +84,8 @@ export class Server {
 
     return account;
   }
+
+  
 
   static async createIdTokenFromCustomToken(uid) {
     const FIREBASE_API_KEY = process.env.FIREBASE_API_KEY;
