@@ -223,10 +223,56 @@ export const updateTrip = (req, res) => {
   });
 };
 
-// TODO: Add a stage to an INACTIVE trip
+// Add a stage to an INACTIVE trip
+// TODO: Check that the trip belongs to the logged manager
+export const addStage = (req, res) => {
+  console.log(Date() + ' - POST /trips/' + req.params.tripId + '/stages');
+
+  tripModel.findById(req.params.tripId, (err, trip) => {
+
+    if(err) {
+      res.status(500).send(err);
+    } else if(trip) {
+      // Check that the trip is INACTIVE
+      if(trip.state!=='INACTIVE') {
+        return res.status(400).send('The trip must be INACTIVE');
+      }
+
+      // Get the stage from the body
+      var stage = {
+        title: req.body.title,
+        description: req.body.description,
+        price: req.body.price
+      }
+
+      // Add the stage to the trip
+      trip.stages.push(stage);
+
+      // Save the trip
+      trip.save(err => {
+        if(err) {
+          if (err.name==='ValidationError') {
+            res.status(422).send(err);
+          } else {
+            res.status(500).send(err);
+          }
+        } else {
+          res.json(trip.cleanup());
+        }
+      });
+
+    } else {
+      res.status(404).send({ error: 'Trip not found' });
+    }
+
+  });
+
+};
+
 
 // Delete a stage from an INACTIVE trip
 export const deleteStage = (req, res) => {
+  // TODO: Check that the stage belongs to the logged manager
   console.log(Date() + ' - DELETE /trips/' + req.params.tripId + '/stages/' + req.params.stageId);
 
   tripModel.findById(req.params.tripId, (err, trip) => {
@@ -278,6 +324,10 @@ export const deleteTrip = (req, res) => {
       // Check that the trip is INACTIVE
       if (trip.state !== 'INACTIVE') {
         return res.status(400).send({error: 'The trip must be INACTIVE'});
+      }
+
+      if (trip.stages.length == 1) {
+        return res.status(400).send({error: 'The trip must have at least one stage'});
       }
 
       tripModel.deleteOne({ _id: req.params.tripId }, (err, trip) => {

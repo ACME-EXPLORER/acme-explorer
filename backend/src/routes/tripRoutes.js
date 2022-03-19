@@ -7,7 +7,8 @@ import {
   findMyTrips, 
   publishTrip, 
   cancelTrip,
-  deleteStage
+  deleteStage,
+  addStage
  } from '../controllers/tripController.js';
 
 export const tripRoutes = app => {
@@ -135,4 +136,7 @@ export const tripRoutes = app => {
   app.route('/v1/trips/:tripId/cancel').patch(cancelTrip);
 
   app.route('/v1/trips/:tripId/stages/:stageId').delete(deleteStage);
+
+  app.route('/v1/trips/:tripId/stages').post(addStage);
+
 };
