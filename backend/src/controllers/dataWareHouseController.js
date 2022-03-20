@@ -10,7 +10,7 @@ import { CronJob, CronTime } from 'cron';
 // '*/30 * * * * *' Every 30 seconds
 // '*/10 * * * * *' Every 10 seconds
 // '* * * * * *' Every second
-let rebuildPeriod = '* * * * * *'; // Default
+let rebuildPeriod = '0 0 * * * *'; // Default
 let computeDataWareHouseJob;
 
 // TODO: Add authentication
@@ -240,28 +240,39 @@ function computeApplicationStatistics(callback) {
 }
 
 function computeRatioOfApplications(callback) {
-  // TODO: Replace
-  const totalNum = 5.0;
-  // const totalNum = await applicationModel.countDocuments({});
   applicationModel.aggregate(
     [
       {
         $group: {
-          _id: '$state',
-          count: { $count: {} }
+          _id: null,
+          totalCount: {
+            $count: {}
+          },
+          data: {
+            $push: '$$ROOT'
+          }
+        }
+      },
+      {
+        $unwind: '$data'
+      },
+      {
+        $group: {
+          _id: '$data.state',
+          stateCount: { $count: {} },
+          totalCount: {
+            $first: '$totalCount'
+          }
         }
       },
       {
         $project: {
           _id: 0,
           status: '$_id',
-          count: 1,
-          ratio: { $multiply: [{ $divide: [100, totalNum] }, '$count'] }
+          ratio: { $round: [{ $multiply: [{ $divide: ['$stateCount', '$totalCount'] }, 100] }, 2] }
         }
       }
     ],
-    function(err, res) {
-      callback(err, res[0]);
-    }
+    (err, res) => callback(err, res)
   );
 }

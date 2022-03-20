@@ -27,9 +27,9 @@ const DataWareHouseSchema = new Schema(
     },
     ratioOfApplications: [
       {
+        _id: false,
         status: { type: String },
-        ration: { type: Number },
-        count: { type: Number }
+        ratio: { type: Number }
       }
     ],
     computationMoment: { type: Date, default: Date.now },
