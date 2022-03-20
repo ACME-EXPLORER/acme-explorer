@@ -352,7 +352,7 @@ describe('Actor API endpoints', () => {
   });
 
   describe('CreateActor', () => {
-    test('should create an new actor', async () => {
+    test('should create a new actor', async () => {
       // Arrange
       const actor = fakeActor(faker.lorem.word(14));
 
