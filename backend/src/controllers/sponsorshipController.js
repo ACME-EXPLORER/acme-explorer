@@ -1,7 +1,8 @@
 import { StatusCodes } from 'http-status-codes';
 import { sponsorshipModel } from '../models/sponsorshipModel.js';
+import { configurationModel } from '../models/configurationModel.js';
 import { RecordNotFound } from '../shared/exceptions.js';
-import { BasicState } from '../shared/enums.js';
+import { BasicState, Roles } from '../shared/enums.js';
 
 export const findAllSponsorships = async (req, res, next) => {
   try {
@@ -78,6 +79,30 @@ export const paySponsorship = async (req, res) => {
     } else {
       res.status(StatusCodes.SERVICE_UNAVAILABLE).send({ message: 'Error processing payment.' });
     }
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+  }
+};
+
+export const configureFlatRate = async (req, res) => {
+  try {
+    const { actor } = res.locals;
+
+    if (!actor) {
+      return res.status(StatusCodes.UNAUTHORIZED).send('Not authorized');
+    }
+
+    if (actor.role !== Roles.ADMIN) {
+      return res.status(StatusCodes.METHOD_NOT_ALLOWED).send('You cannot perform this operation');
+    }
+
+    const result = await configurationModel.findOneAndUpdate(
+      { key: 'sponsorshipFlatRate' },
+      { value: parseFloat(req.params.newFlatRate) },
+      { new: true }
+    );
+
+    return res.json(result);
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
   }

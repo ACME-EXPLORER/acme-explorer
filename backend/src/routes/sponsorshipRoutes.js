@@ -1,11 +1,14 @@
+import { verifyUser } from '../controllers/authController.js';
 import {
   findAllSponsorships,
   createSponsorship,
   findSponsorship,
   updateSponsorship,
   deleteSponsorship,
-  paySponsorship
+  paySponsorship,
+  configureFlatRate
 } from '../controllers/sponsorshipController.js';
+import { Roles } from '../shared/enums.js';
 
 export const sponsorshipRoutes = app => {
   /**
@@ -140,4 +143,21 @@ export const sponsorshipRoutes = app => {
    *               $ref: '#/components/schemas/sponsorship'
    */
   app.route('/v1/sponsorships/:sponsorshipId/pay').patch(paySponsorship);
+  /**
+   * @openapi
+   * /v1/sponsorships/configureFlatRate/{newFlatRate}:
+   *   patch:
+   *     description: Configure Flat Rate
+   *     tags: [Sponsorships]
+   *     parameters:
+   *       - name: newFlatRate
+   *         type: number
+   *         minimum: 0
+   *         in: path
+   *         required: true
+   *     responses:
+   *       200:
+   *         description: The new flat rate
+   */
+  app.route('/v1/sponsorships/configureFlatRate/:newFlatRate').patch(verifyUser([Roles.ADMIN]), configureFlatRate);
 };
