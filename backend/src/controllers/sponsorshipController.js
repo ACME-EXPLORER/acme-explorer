@@ -26,11 +26,11 @@ export const findAllSponsorships = async (req, res) => {
 export const createSponsorship = async (req, res) => {
   try {
     const { actor } = res.locals;
-    
+
     if (!(actor.role === Roles.SPONSOR || actor.role === Roles.ADMIN)) {
       return res.status(StatusCodes.METHOD_NOT_ALLOWED).send('You cannot perform this operation');
     }
-    
+
     const newSponsorship = new sponsorshipModel(req.body);
     const sponsorship = await newSponsorship.save();
     return res.status(StatusCodes.CREATED).json(sponsorship);
@@ -85,10 +85,9 @@ export const findSponsorship = async (req, res, next) => {
   }
 };
 
-
 export const updateSponsorship = async (req, res) => {
   try {
-    const { sponsor } = await sponsorshipModel.findById(req.params.sponsorshipId)
+    const { sponsor } = await sponsorshipModel.findById(req.params.sponsorshipId);
     const { actor } = res.locals;
 
     if (!actor) {
@@ -114,7 +113,7 @@ export const updateSponsorship = async (req, res) => {
 
 export const deleteSponsorship = async (req, res) => {
   try {
-    const { sponsor } = await sponsorshipModel.findById(req.params.sponsorshipId)
+    const { sponsor } = await sponsorshipModel.findById(req.params.sponsorshipId);
     const { actor } = res.locals;
 
     if (!actor) {
@@ -134,7 +133,7 @@ export const deleteSponsorship = async (req, res) => {
 
 export const paySponsorship = async (req, res) => {
   try {
-    const { sponsor } = await sponsorshipModel.findById(req.params.sponsorshipId)
+    const { sponsor } = await sponsorshipModel.findById(req.params.sponsorshipId);
     const { actor } = res.locals;
     const isPaymentApproved = true; // Payment logic and connection with Paypal
 
@@ -153,7 +152,7 @@ export const paySponsorship = async (req, res) => {
       );
       return res.json(activeSponsorship);
     }
-      
+
     return res.status(StatusCodes.SERVICE_UNAVAILABLE).send({ message: 'Error processing payment.' });
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);

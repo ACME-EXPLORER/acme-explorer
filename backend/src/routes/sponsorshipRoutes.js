@@ -1,4 +1,6 @@
 import { verifyUser } from '../controllers/authController.js';
+import { Roles } from '../shared/enums.js';
+import { SPONSOR } from '../shared/auth/authorized-roles.arrays.js';
 import {
   findAllSponsorships,
   createSponsorship,
@@ -9,8 +11,6 @@ import {
   configureFlatRate,
   findMySponsorships
 } from '../controllers/sponsorshipController.js';
-import { Roles } from '../shared/enums.js';
-import { SPONSOR } from '../shared/auth/authorized-roles.arrays.js';
 
 export const sponsorshipRoutes = app => {
   /**
