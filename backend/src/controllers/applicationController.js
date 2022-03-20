@@ -93,7 +93,10 @@ export const findMyApplications = async (req, res) => {
     }
 
     if (actor.role === Roles.EXPLORER) {
-      const applications = await applicationModel.find({ explorer: actor._id });
+      const applications = await applicationModel
+        .find({ explorer: actor._id })
+        .populate(['trip'])
+        .sort('state');
       return res.json(applications);
     }
 
