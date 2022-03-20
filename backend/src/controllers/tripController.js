@@ -373,9 +373,7 @@ export const deleteTrip = (req, res) => {
         return res.status(403).send({ error: 'You are not authorized to delete this trip' });
       }
 
-      if (trip.stages.length == 1) {
-        return res.status(400).send({ error: 'The trip must have at least one stage' });
-      }
+
 
       tripModel.deleteOne({ _id: req.params.tripId }, (err, trip) => {
         if (err) {

@@ -113,10 +113,6 @@ describe('Trips API endpoints', () => {
         // Get id of the first stage of the trip
         stage2Id = trip2.body.stages[1].id;
 
-        console.log(trip2);
-        console.log(trip2.body.stages[0])
-        console.log(trip2.body.stages[1])
-
     })
 
     afterAll(async() => {
@@ -423,13 +419,98 @@ describe('Trips API endpoints', () => {
 
         it('Should return an error if the user is not the manager of the trip', done => {
             chai.request(server.instance).delete(`/v1/trips/${trip2Id}/stages/${stage2Id}`).set('idtoken', manager2Token).end((err, res) => {
-                console.log(trip2Id)
-                console.log(stage2Id)
                 expect(res).to.have.status(403);
                 done();
             })
         })   
     })
+
+    describe('/v1/trips/:tripId - DELETE', () => {
+        it('Should remove an INACTIVE trip from the database', async () => {
+            // Create a trip to delete
+            let tripToDelete = await chai.request(server.instance).post('/v1/trips').set('idtoken', manager1Token).send({
+                title: "test.trip.delete",
+                description: "test.trip.delete",
+                requirements: ["new requirement"],
+                startDate: "2023-01-01",
+                endDate: "2023-01-09",
+                stages: [
+                    {
+                        title: "stage 1",
+                        description: "sample description",
+                        price: 500
+                    }
+                ]
+            })
+
+            let tripToDeleteId = tripToDelete.body.id;
+            console.log(tripToDeleteId)
+
+            const response = await chai.request(server.instance).delete(`/v1/trips/${tripToDeleteId}`).set('idtoken', manager1Token)
+            console.log(response.body)
+            expect(response).to.have.status(204);
+            
+        })
+
+        it('Should return an error if the trip belongs to a different user', async ()  => {
+
+            // Create a trip to delete
+            let tripToDelete = await chai.request(server.instance).post('/v1/trips').set('idtoken', manager1Token).send({
+                title: "test.trip.delete",
+                description: "test.trip.delete",
+                requirements: ["new requirement"],
+                startDate: "2023-01-01",
+                endDate: "2023-01-09",
+                stages: [
+                    {
+                        title: "stage 1",
+                        description: "sample description",
+                        price: 500
+                    }
+                ]
+            })
+
+            let tripToDeleteId = tripToDelete.body.id;
+            console.log(tripToDeleteId)
+
+            // Try to delete it logged as a different user
+            const response = await chai.request(server.instance).delete(`/v1/trips/${tripToDeleteId}`).set('idtoken', manager2Token)
+            console.log(response.body)
+            expect(response).to.have.status(403);
+           
+        })
+
+        it('Should return an error if the trip is ACTIVE', async ()  => {
+                
+                // Create a trip to delete
+                let tripToDelete = await chai.request(server.instance).post('/v1/trips').set('idtoken', manager1Token).send({
+                    title: "test.trip.delete",
+                    description: "test.trip.delete",
+                    requirements: ["new requirement"],
+                    startDate: "2023-01-01",
+                    endDate: "2023-01-09",
+                    stages: [
+                        {
+                            title: "stage 1",
+                            description: "sample description",
+                            price: 500
+                        }
+                    ]
+                })
+    
+                let tripToDeleteId = tripToDelete.body.id;
+                console.log(tripToDeleteId)
+
+                await tripModel.findOneAndUpdate({ _id: tripToDeleteId }, { state: "ACTIVE" });
+    
+                
+                const response = await chai.request(server.instance).delete(`/v1/trips/${tripToDeleteId}`).set('idtoken', manager1Token)
+                console.log(response.body)
+                expect(response).to.have.status(400);
+            
+            })
+    })
+
 })
 
 const cleanTestDatabase = async () => {
