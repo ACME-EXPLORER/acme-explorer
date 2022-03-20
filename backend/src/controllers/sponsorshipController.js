@@ -1,5 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 import { sponsorshipModel } from '../models/sponsorshipModel.js';
+import { actorModel } from '../models/actorModel.js';
 import { configurationModel } from '../models/configurationModel.js';
 import { RecordNotFound } from '../shared/exceptions.js';
 import { BasicState, Roles } from '../shared/enums.js';
@@ -27,8 +28,14 @@ export const createSponsorship = async (req, res) => {
   try {
     const { actor } = res.locals;
 
+    const { role } = await actorModel.findById(req.body.sponsor);
+
     if (!(actor.role === Roles.SPONSOR || actor.role === Roles.ADMIN)) {
       return res.status(StatusCodes.METHOD_NOT_ALLOWED).send('You cannot perform this operation');
+    }
+
+    if (role !== Roles.SPONSOR) {
+      return res.status(StatusCodes.BAD_REQUEST).send('The provided actor must be an sponsor');
     }
 
     const newSponsorship = new sponsorshipModel(req.body);
