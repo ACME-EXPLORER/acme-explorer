@@ -166,7 +166,29 @@ describe('Trips API endpoints', () => {
         })
     })
 
-    
+    describe('/v1/trips/:tripId - GET', () => {
+        it('Should return the trip with the given id', done => {
+            chai.request(server.instance).get(`/v1/trips/${trip1Id}`).end((err, res) => {
+                expect(res).to.have.status(200);
+                expect(res.body.id).to.equal(trip1Id);
+                done();
+            })
+        })
+
+        it('Should return an error if the trip does not exist', done => {
+            chai.request(server.instance).get(`/v1/trips/5e8b8f8a9e9e9f0f8c8a8a8a`).end((err, res) => {
+                expect(res).to.have.status(404);
+                done();
+            })
+        })
+
+        it('Should return an error if the user tries to display an inactive trip', done => {
+            chai.request(server.instance).get(`/v1/trips/${trip2Id}`).end((err, res) => {
+                expect(res).to.have.status(400);
+                done();
+            })
+        })
+    })
 
 })
 
