@@ -68,7 +68,7 @@ export const updateActor = async (req, res) => {
 export const deleteActor = async (req, res) => {
   try {
     await actorModel.deleteOne({ _id: req.params.actorId });
-    res.status(StatusCodes.NO_CONTENT).send({});
+    res.sendStatus(StatusCodes.NO_CONTENT);
   } catch (err) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(err);
   }
