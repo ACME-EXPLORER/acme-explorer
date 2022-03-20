@@ -65,6 +65,11 @@ describe('Trips API endpoints', () => {
                             "title": "stage 1",
                             "description": "First stage",
                             "price": 800
+                        },
+                        {
+                            "title": "stage 2",
+                            "description": "second stage",
+                            "price": 500
                         }
                     ]
 
@@ -90,6 +95,11 @@ describe('Trips API endpoints', () => {
                             "title": "stage 1",
                             "description": "First stage",
                             "price": 800
+                        },
+                        {
+                            "title": "stage 2",
+                            "description": "second stage",
+                            "price": 500
                         }
                     ]
 
@@ -134,6 +144,11 @@ describe('Trips API endpoints', () => {
                         title: "stage 1",
                         description: "sample description",
                         price: 500
+                    },
+                    {
+                        "title": "stage 2",
+                        "description": "second stage",
+                        "price": 500
                     }
                 ]
             }).end((err, res) => {
@@ -203,6 +218,11 @@ describe('Trips API endpoints', () => {
                         title: "stage 1",
                         description: "sample description",
                         price: 500
+                    },
+                    {
+                        "title": "stage 2",
+                        "description": "second stage",
+                        "price": 800
                     }
                 ]
             }).end((err, res) => {
@@ -215,7 +235,10 @@ describe('Trips API endpoints', () => {
                 expect(res.body.stages[0].title).to.equal("stage 1");
                 expect(res.body.stages[0].description).to.equal("sample description");
                 expect(res.body.stages[0].price).to.equal(500);
-
+                expect(res.body.stages[1].title).to.equal("stage 2");
+                expect(res.body.stages[1].description).to.equal("second stage");
+                expect(res.body.stages[1].price).to.equal(800);
+                
                 done();
             })
         })
@@ -348,6 +371,41 @@ describe('Trips API endpoints', () => {
 
         it('Should return an error if the user is not the manager of the trip', done => {
             chai.request(server.instance).get(`/v1/myTrips/${trip1Id}`).set('idtoken', manager2Token).end((err, res) => {
+                expect(res).to.have.status(403);
+                done();
+            })
+        })
+    })
+
+    describe('/v1/trips/:tripId/stages – POST', () => {
+        it('Should add a new stage to an INACTIVE trip', done => {
+            chai.request(server.instance).post(`/v1/trips/${trip2Id}/stages`).set('idtoken', manager1Token).send({
+                title: "new stage",
+                description: "new description",
+                price: 500
+            }).end((err, res) => {
+                expect(res).to.have.status(200);
+                done();
+            })
+        })
+
+        it('Should return an error if the user tries to add a stage to an ACTIVE trip', done => {
+            chai.request(server.instance).post(`/v1/trips/${trip1Id}/stages`).set('idtoken', manager1Token).send({
+                title: "new stage",
+                description: "new description",
+                price: 500
+            }).end((err, res) => {
+                expect(res).to.have.status(400);
+                done();
+            })
+        })
+
+        it('Should return an error if the trip belongs to a different user', done => {
+            chai.request(server.instance).post(`/v1/trips/${trip2Id}/stages`).set('idtoken', manager2Token).send({
+                title: "new stage",
+                description: "new description",
+                price: 500
+            }).end((err, res) => {
                 expect(res).to.have.status(403);
                 done();
             })
