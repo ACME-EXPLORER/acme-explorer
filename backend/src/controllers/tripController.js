@@ -116,6 +116,11 @@ export const createTrip = async (req, res) => {
     manager: actor.id  // id of the logged user
   };
 
+  // If startDate is after endDate, return error
+  if (trip.startDate > trip.endDate) {
+    return res.status(400).send({ error: 'Start date cannot be after end date' });
+  }
+
   const newTrip = new tripModel(trip);
 
   newTrip.save((err, trip) => {
@@ -227,6 +232,11 @@ export const updateTrip = (req, res) => {
 
       if(actor.id !== trip.manager.toString()) {
         return res.status(403).send({ error: 'You are not authorized to update this trip' });
+      }
+
+      // If startDate is after endDate, return error
+      if (req.body.startDate > req.body.endDate) {
+        return res.status(400).send({ error: 'Start date cannot be after end date' });
       }
 
       var update = {

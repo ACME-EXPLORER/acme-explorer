@@ -66,12 +66,6 @@ const TripSchema = new Schema({
   endDate: {
     type: Date,
     required: 'End date is required',
-    validate: {
-      validator: function(v) {
-        return v > this.startDate; // StartDate before endDate
-      },
-      message: 'End date must be after start date'
-    }
   },
   pictures: {
     type: [String],

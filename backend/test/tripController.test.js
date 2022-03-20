@@ -190,6 +190,116 @@ describe('Trips API endpoints', () => {
         })
     })
 
+    describe('/v1/trips/:tripId - PUT', () => {
+        it('Should update the trip with the given id', done => {
+            chai.request(server.instance).put(`/v1/trips/${trip2Id}`).set('idtoken', manager1Token).send({
+                title: "test.trip.inactiveUpdated",
+                description: "new description",
+                requirements: ["new requirement"],
+                startDate: "2023-01-01",
+                endDate: "2026-01-09",
+                stages: [
+                    {
+                        title: "stage 1",
+                        description: "sample description",
+                        price: 500
+                    }
+                ]
+            }).end((err, res) => {
+                expect(res).to.have.status(200);
+                expect(res.body.title).to.equal("test.trip.inactiveUpdated");
+                expect(res.body.description).to.equal("new description");
+                expect(res.body.requirements).to.deep.equal(["new requirement"]);
+                expect(res.body.startDate).to.equal("01/01/2023");
+                expect(res.body.endDate).to.equal("09/01/2026");
+                expect(res.body.stages[0].title).to.equal("stage 1");
+                expect(res.body.stages[0].description).to.equal("sample description");
+                expect(res.body.stages[0].price).to.equal(500);
+
+                done();
+            })
+        })
+
+        it('Should return an error if the trip does not exist', done => {
+            chai.request(server.instance).put(`/v1/trips/5e8b8f8a9e9e9f0f8c8a8a8a`).set('idtoken', manager1Token).send({
+                title: "new title",
+                description: "new description",
+                requirements: ["new requirement"],
+                startDate: "2025-01-01",
+                endDate: "2025-01-09",
+                stages: [
+                    {
+                        title: "stage 1",
+                        description: "sample description",
+                        price: 500
+                    }
+                ]
+            }).end((err, res) => {
+                expect(res).to.have.status(404);
+                done();
+            })
+        })
+
+        it('Should return an error if the user is not a manager', done => {
+            chai.request(server.instance).put(`/v1/trips/${trip2Id}`).send({
+                title: "new title",
+                description: "new description",
+                requirements: ["new requirement"],
+                startDate: "2025-01-01",
+                endDate: "2025-01-09",
+                stages: [
+                    {
+                        title: "stage 1",
+                        description: "sample description",
+                        price: 500
+                    }
+                ]
+            }).end((err, res) => {
+                expect(res).to.have.status(401);
+                done();
+            })
+        })
+
+        it('Should return an error if the user tries to update an ACTIVE trip', done => {
+            chai.request(server.instance).put(`/v1/trips/${trip1Id}`).set('idtoken', manager1Token).send({
+                title: "test.trip.inactiveUpdated",
+                description: "new description",
+                requirements: ["new requirement"],
+                startDate: "2023-01-01",
+                endDate: "2026-01-09",
+                stages: [
+                    {
+                        title: "stage 1",
+                        description: "sample description",
+                        price: 500
+                    }
+                ]
+            }).end((err, res) => {
+                expect(res).to.have.status(400);
+                done();
+            })
+        })
+
+        it('Should not be able to update a trip that belongs to a different manager', done => {
+            chai.request(server.instance).put(`/v1/trips/${trip2Id}`).set('idtoken', manager2Token).send({
+                title: "test.trip.inactiveUpdated",
+                description: "new description",
+                requirements: ["new requirement"],
+                startDate: "2023-01-01",
+                endDate: "2026-01-09",
+                stages: [
+                    {
+                        title: "stage 1",
+                        description: "sample description",
+                        price: 500
+                    }
+                ]
+            }).end((err, res) => {
+                expect(res).to.have.status(403);
+                done();
+            })
+        })
+    })
 })
 
 const cleanTestDatabase = async () => {
