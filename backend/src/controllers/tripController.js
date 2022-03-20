@@ -27,7 +27,7 @@ export const findOneOfMyTrips = async (req, res) => {
       res.status(500).send(err);
     } else if (trip) {
       const { actor } = res.locals;
-      if(actor.id !== trip.manager) {
+      if(actor.id !== trip.manager.toString()) {
         return res.status(403).send({ error: 'You are not authorized to access this trip' });
       } else {
         res.json(trip.cleanup());

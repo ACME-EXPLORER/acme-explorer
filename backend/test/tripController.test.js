@@ -328,7 +328,31 @@ describe('Trips API endpoints', () => {
             })
         })
 
-    })  
+    }) 
+    
+    describe('/v1/myTrips/:tripId -GET', () => {
+        it('Should return the trip of the user with the given id', done => {
+            chai.request(server.instance).get(`/v1/myTrips/${trip2Id}`).set('idtoken', manager1Token).end((err, res) => {
+                expect(res).to.have.status(200);
+                expect(res.body.manager).to.equal(manager1Id);
+                done();
+            })
+        })
+
+        it('Should return an error if the user is not logged in', done => {
+            chai.request(server.instance).get(`/v1/myTrips/${trip1Id}`).end((err, res) => {
+                expect(res).to.have.status(401);
+                done();
+            })
+        })
+
+        it('Should return an error if the user is not the manager of the trip', done => {
+            chai.request(server.instance).get(`/v1/myTrips/${trip1Id}`).set('idtoken', manager2Token).end((err, res) => {
+                expect(res).to.have.status(403);
+                done();
+            })
+        })
+    })
 })
 
 const cleanTestDatabase = async () => {
