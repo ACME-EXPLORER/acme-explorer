@@ -10,7 +10,7 @@ chai.use(chaiHttp)
 
 describe('Trips API endpoints', () => {
 
-    let manager1Test, manager2Test, manager1Id, manager2Id, manager1Token, manager2Token, trip1Id, trip2Id;
+    let manager1Test, manager2Test, manager1Id, manager2Id, manager1Token, manager2Token, trip1Id, trip2Id, stage1Id, stage2Id;
     
     beforeAll(async() => {
 
@@ -76,6 +76,10 @@ describe('Trips API endpoints', () => {
                 })
 
         trip1Id = trip1.body.id;
+
+        // Get id of the first stage of the trip
+        stage1Id = trip1.body.stages[0].id;
+
         await tripModel.findOneAndUpdate({ _id: trip1Id }, { state: "ACTIVE" });
         
 
@@ -105,6 +109,13 @@ describe('Trips API endpoints', () => {
 
                 })
         trip2Id = trip2.body.id;
+
+        // Get id of the first stage of the trip
+        stage2Id = trip2.body.stages[1].id;
+
+        console.log(trip2);
+        console.log(trip2.body.stages[0])
+        console.log(trip2.body.stages[1])
 
     })
 
@@ -212,19 +223,7 @@ describe('Trips API endpoints', () => {
                 description: "new description",
                 requirements: ["new requirement"],
                 startDate: "2023-01-01",
-                endDate: "2026-01-09",
-                stages: [
-                    {
-                        title: "stage 1",
-                        description: "sample description",
-                        price: 500
-                    },
-                    {
-                        "title": "stage 2",
-                        "description": "second stage",
-                        "price": 800
-                    }
-                ]
+                endDate: "2026-01-09"
             }).end((err, res) => {
                 expect(res).to.have.status(200);
                 expect(res.body.title).to.equal("test.trip.inactiveUpdated");
@@ -232,12 +231,6 @@ describe('Trips API endpoints', () => {
                 expect(res.body.requirements).to.deep.equal(["new requirement"]);
                 expect(res.body.startDate).to.equal("01/01/2023");
                 expect(res.body.endDate).to.equal("09/01/2026");
-                expect(res.body.stages[0].title).to.equal("stage 1");
-                expect(res.body.stages[0].description).to.equal("sample description");
-                expect(res.body.stages[0].price).to.equal(500);
-                expect(res.body.stages[1].title).to.equal("stage 2");
-                expect(res.body.stages[1].description).to.equal("second stage");
-                expect(res.body.stages[1].price).to.equal(800);
                 
                 done();
             })
@@ -410,6 +403,32 @@ describe('Trips API endpoints', () => {
                 done();
             })
         })
+    })
+
+    describe('/v1/trips/:tripId/stages/:stageId - DELETE', done => {
+        it('Should remove a stage from a trip', done => {
+            chai.request(server.instance).delete(`/v1/trips/${trip2Id}/stages/${stage2Id}`).set('idtoken', manager1Token).end((err, res) => {
+
+                expect(res).to.have.status(200);
+                done();
+            })
+        })
+
+        it('Should return an error if the user is not logged in', done => {
+            chai.request(server.instance).delete(`/v1/trips/${trip1Id}/stages/${stage1Id}`).end((err, res) => {
+                expect(res).to.have.status(401);
+                done();
+            })
+        })
+
+        it('Should return an error if the user is not the manager of the trip', done => {
+            chai.request(server.instance).delete(`/v1/trips/${trip2Id}/stages/${stage2Id}`).set('idtoken', manager2Token).end((err, res) => {
+                console.log(trip2Id)
+                console.log(stage2Id)
+                expect(res).to.have.status(403);
+                done();
+            })
+        })   
     })
 })
 
