@@ -24,22 +24,21 @@ export const findTrip = async (req, res) => {
 // Find one of the trips of the logged in manager
 export const findOneOfMyTrips = async (req, res) => {
   tripModel.findById(req.params.tripId, (err, trip) => {
-    if(err){
+    if (err) {
       res.status(500).send(err);
     } else if (trip) {
       const { actor } = res.locals;
-      if(actor.id !== trip.manager.toString()) {
+      if (actor.id !== trip.manager.toString()) {
         return res.status(403).send({ error: 'You are not authorized to access this trip' });
       } else {
         res.json(trip.cleanup());
       }
     }
-  })
-}
+  });
+};
 
 // Find trips of the logged in manager
 export const findMyTrips = (req, res) => {
-
   const { actor } = res.locals;
 
   tripModel.find(
@@ -114,7 +113,7 @@ export const createTrip = async (req, res) => {
     pictures: req.body.pictures,
     state: 'INACTIVE',
     stages: req.body.stages,
-    manager: actor.id  // id of the logged user
+    manager: actor.id // id of the logged user
   };
 
   // If startDate is after endDate, return error
@@ -164,8 +163,7 @@ export const cancelTrip = (req, res) => {
 
       if (trip.state === 'ACTIVE') {
         const { actor } = res.locals;
-        if(actor.id === trip.manager.toString()) {
-          
+        if (actor.id === trip.manager.toString()) {
           // Count the number of accepted applications of the trip
           applicationModel.countDocuments({ trip: trip.id, state: 'ACCEPTED' }, (err, count) => {
             if (err) {
@@ -184,11 +182,9 @@ export const cancelTrip = (req, res) => {
               });
             }
           });
-
         } else {
           return res.status(403).send({ error: 'You are not authorized to cancel this trip' });
         }
-        
       } else {
         res.status(400).send({ error: 'Trip is not ACTIVE' });
       }
@@ -212,7 +208,7 @@ export const publishTrip = (req, res) => {
       }
 
       const { actor } = res.locals;
-      if(actor.id === trip.manager.toString()) {
+      if (actor.id === trip.manager.toString()) {
         trip.state = 'ACTIVE';
         trip.save(err => {
           if (err) {
@@ -224,8 +220,6 @@ export const publishTrip = (req, res) => {
       } else {
         return res.status(403).send({ error: 'You are not authorized to publish this trip' });
       }
-
-      
     } else {
       res.status(404).send({ error: 'Trip not found' });
     }
@@ -247,7 +241,7 @@ export const updateTrip = (req, res) => {
 
       const { actor } = res.locals;
 
-      if(actor.id !== trip.manager.toString()) {
+      if (actor.id !== trip.manager.toString()) {
         return res.status(403).send({ error: 'You are not authorized to update this trip' });
       }
 
@@ -298,7 +292,7 @@ export const addStage = (req, res) => {
       }
 
       const { actor } = res.locals;
-      if(actor.id !== trip.manager.toString()) {
+      if (actor.id !== trip.manager.toString()) {
         return res.status(403).send({ error: 'You are not authorized to add a stage to this trip' });
       }
 
@@ -344,7 +338,7 @@ export const deleteStage = (req, res) => {
       }
 
       const { actor } = res.locals;
-      if(actor.id !== trip.manager.toString()) {
+      if (actor.id !== trip.manager.toString()) {
         return res.status(403).send({ error: 'You are not authorized to remove a stage from this trip' });
       }
 
@@ -386,11 +380,9 @@ export const deleteTrip = (req, res) => {
       }
 
       const { actor } = res.locals;
-      if(actor.id !== trip.manager.toString()) {
+      if (actor.id !== trip.manager.toString()) {
         return res.status(403).send({ error: 'You are not authorized to delete this trip' });
       }
-
-
 
       tripModel.deleteOne({ _id: req.params.tripId }, (err, trip) => {
         if (err) {

@@ -63,7 +63,7 @@ const TripSchema = new Schema({
   },
   endDate: {
     type: Date,
-    required: 'End date is required',
+    required: 'End date is required'
   },
   pictures: {
     type: [String],
