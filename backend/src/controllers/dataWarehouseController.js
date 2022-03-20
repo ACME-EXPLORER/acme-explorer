@@ -30,7 +30,6 @@ export const listAllIndicators = (req, res) => {
     });
 };
 
-
 export const findLastIndicator = (req, res) => {
   console.log('Requesting LAST indicator');
 
@@ -48,18 +47,20 @@ export const findLastIndicator = (req, res) => {
 
 export const changeRebuildPeriod = function(req, res) {
   console.log('Updating rebuild period. Request period: ' + req.query.rebuildPeriod);
-  if(req.query.rebuildPeriod === "everyHour") {
+  if (req.query.rebuildPeriod === 'everyHour') {
     rebuildPeriod = '0 0 * * * *';
-  } else if(req.query.rebuildPeriod === "everyMinute") {
+  } else if (req.query.rebuildPeriod === 'everyMinute') {
     rebuildPeriod = '*/1 * * * * *';
-  } else if(req.query.rebuildPeriod === "everyTenSeconds") {
+  } else if (req.query.rebuildPeriod === 'everyTenSeconds') {
     rebuildPeriod = '*/10 * * * * *';
-  } else if (req.query.rebuildPeriod === "everySecond") {
+  } else if (req.query.rebuildPeriod === 'everySecond') {
     rebuildPeriod = '* * * * * *';
   } else {
-    throw new InvalidRequest('Invalid rebuild period, accepted values: everyHour, everyMinute, everyTenSeconds, everySecond');
+    throw new InvalidRequest(
+      'Invalid rebuild period, accepted values: everyHour, everyMinute, everyTenSeconds, everySecond'
+    );
   }
-  console.log(rebuildPeriod)
+  console.log(rebuildPeriod);
   computeDataWarehouseJob.setTime(new CronTime(rebuildPeriod));
   computeDataWarehouseJob.start();
 

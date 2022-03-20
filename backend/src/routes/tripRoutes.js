@@ -40,7 +40,7 @@ export const tripRoutes = app => {
    *               type: array
    *               items:
    *               $ref: '#/components/schemas/trip'
-   *              page: 
+   *              page:
    *                type: integer
    *              pages:
    *                type: number
@@ -154,7 +154,7 @@ export const tripRoutes = app => {
     .put(verifyUser([Roles.MANAGER]), updateTrip)
     .delete(verifyUser([Roles.MANAGER]), deleteTrip);
 
-    /**
+  /**
    * @openapi
    * /v1/myTrips:
    *   get:
@@ -170,8 +170,7 @@ export const tripRoutes = app => {
    *             items:
    *              $ref: '#/components/schemas/trip'
    */
-  app.route('/v1/myTrips')
-    .get(verifyUser([Roles.MANAGER]), findMyTrips);
+  app.route('/v1/myTrips').get(verifyUser([Roles.MANAGER]), findMyTrips);
 
   /**
    * @openapi
@@ -201,8 +200,7 @@ export const tripRoutes = app => {
    *       403:
    *         description: Authorization error
    */
-  app.route('/v1/myTrips/:tripId')
-    .get(verifyUser([Roles.MANAGER]), findOneOfMyTrips);
+  app.route('/v1/myTrips/:tripId').get(verifyUser([Roles.MANAGER]), findOneOfMyTrips);
 
   /**
    * @openapi
@@ -232,8 +230,7 @@ export const tripRoutes = app => {
    *       403:
    *         description: Authorization error
    */
-  app.route('/v1/trips/:tripId/publish')
-    .patch(verifyUser([Roles.MANAGER]), publishTrip);
+  app.route('/v1/trips/:tripId/publish').patch(verifyUser([Roles.MANAGER]), publishTrip);
 
   /**
    * @openapi
@@ -268,10 +265,9 @@ export const tripRoutes = app => {
    *       403:
    *         description: Authorization error
    */
-  app.route('/v1/trips/:tripId/cancel')
-    .patch(verifyUser([Roles.MANAGER]), cancelTrip);
+  app.route('/v1/trips/:tripId/cancel').patch(verifyUser([Roles.MANAGER]), cancelTrip);
 
-    /**
+  /**
    * @openapi
    * /v1/trips/{tripId}/stages/{stageId}:
    *   delete:
@@ -297,9 +293,9 @@ export const tripRoutes = app => {
    *         description: Authentication error
    *       403:
    *         description: Authorization error
-   */ 
-  app.route('/v1/trips/:tripId/stages/:stageId')
-    .delete(verifyUser([Roles.MANAGER]), deleteStage);
+   */
+
+  app.route('/v1/trips/:tripId/stages/:stageId').delete(verifyUser([Roles.MANAGER]), deleteStage);
 
   /**
    * @openapi
@@ -319,7 +315,7 @@ export const tripRoutes = app => {
    *                description:
    *                  type: string
    *                price:
-   *                  type: number     
+   *                  type: number
    *      responses:
    *        200:
    *          description: The stage was successfully added to the trip
@@ -336,6 +332,5 @@ export const tripRoutes = app => {
    *        403:
    *          description: Authorization error
    */
-  app.route('/v1/trips/:tripId/stages')
-    .post(verifyUser([Roles.MANAGER]), addStage);
+  app.route('/v1/trips/:tripId/stages').post(verifyUser([Roles.MANAGER]), addStage);
 };

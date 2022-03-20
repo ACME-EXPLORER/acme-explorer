@@ -14,9 +14,9 @@ export const dataWarehouseRoutes = app => {
    * tags:
    *  name: Dashboard
    *  description: Managing the admin dashboard
-  */
+   */
 
-    /**
+  /**
    * @openapi
    * /v1/datawarehouse:
    *   get:
