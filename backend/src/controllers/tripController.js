@@ -153,7 +153,7 @@ export const cancelTrip = (req, res) => {
     } else if (trip) {
       if (trip.state === 'ACTIVE') {
         const { actor } = res.locals;
-        if(actor.id === trip.manager) {
+        if(actor.id === trip.manager.toString()) {
           trip.state = 'CANCELLED';
           trip.reasonCancelled = req.query.reasonCancelled;
           trip.save(err => {
@@ -190,7 +190,7 @@ export const publishTrip = (req, res) => {
       }
 
       const { actor } = res.locals;
-      if(actor.id === trip.manager) {
+      if(actor.id === trip.manager.toString()) {
         trip.state = 'ACTIVE';
         trip.save(err => {
           if (err) {
@@ -225,7 +225,7 @@ export const updateTrip = (req, res) => {
 
       const { actor } = res.locals;
 
-      if(actor.id !== trip.manager) {
+      if(actor.id !== trip.manager.toString()) {
         return res.status(403).send({ error: 'You are not authorized to update this trip' });
       }
 
@@ -271,7 +271,7 @@ export const addStage = (req, res) => {
       }
 
       const { actor } = res.locals;
-      if(actor.id !== trip.manager) {
+      if(actor.id !== trip.manager.toString()) {
         return res.status(403).send({ error: 'You are not authorized to add a stage to this trip' });
       }
 
@@ -317,7 +317,7 @@ export const deleteStage = (req, res) => {
       }
 
       const { actor } = res.locals;
-      if(actor.id !== trip.manager) {
+      if(actor.id !== trip.manager.toString()) {
         return res.status(403).send({ error: 'You are not authorized to remove a stage from this trip' });
       }
 
@@ -359,7 +359,7 @@ export const deleteTrip = (req, res) => {
       }
 
       const { actor } = res.locals;
-      if(actor.id !== trip.manager) {
+      if(actor.id !== trip.manager.toString()) {
         return res.status(403).send({ error: 'You are not authorized to delete this trip' });
       }
 

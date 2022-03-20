@@ -56,9 +56,13 @@ describe('Trips API endpoints', () => {
     })
 
     describe('List all Trips', () => {
-        it('Welcome to simple test', done => {
+        it('List all ACTIVE an CANCELLED Trips', done => {
             chai.request(server.instance).get('/v1/trips').end((err, res) => {
                 expect(res).to.have.status(200);
+                // Check that all trips are not INACTIVE
+                res.body.records.forEach(trip => {
+                    expect(trip.state).to.not.equal("INACTIVE");
+                })
                 done();
             })
         })
