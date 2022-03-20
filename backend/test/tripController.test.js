@@ -124,7 +124,7 @@ describe('Trips API endpoints', () => {
             .post('/v1/trips')
             .set('idtoken', manager1Token)
             .send({
-                title: "sample trip",
+                title: "test.trip.inactive",
                 description: "sample description",
                 requirements: ["sample requirement"],
                 startDate: "2025-01-01",
@@ -300,6 +300,35 @@ describe('Trips API endpoints', () => {
             })
         })
     })
+
+    describe('/v1/myTrips - GET', () => {
+        it('Should return the trips of the user', done => {
+            chai.request(server.instance).get('/v1/myTrips').set('idtoken', manager1Token).end((err, res) => {
+                expect(res).to.have.status(200);
+                // Check that the manager of all the trips is equal to the id of the logged in manager
+                res.body.forEach(trip => { 
+                    expect(trip.manager).to.equal(manager1Id);
+                })
+                done();
+            })
+        }) 
+
+        it('Should return an error if the user is not logged in', done => {
+            chai.request(server.instance).get('/v1/myTrips').end((err, res) => {
+                expect(res).to.have.status(401);
+                done();
+            })
+        })
+
+        it('Manager 2 should not have any trips', done => {
+            chai.request(server.instance).get('/v1/myTrips').set('idtoken', manager2Token).end((err, res) => {
+                expect(res).to.have.status(200);
+                expect(res.body).to.be.empty;
+                done();
+            })
+        })
+
+    })  
 })
 
 const cleanTestDatabase = async () => {
