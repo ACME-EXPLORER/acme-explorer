@@ -1,4 +1,5 @@
 import { tripModel } from '../models/tripModel.js';
+import { applicationModel } from '../models/applicationModel.js';
 import Constants from '../shared/constants.js';
 import { StatusCodes } from 'http-status-codes';
 
@@ -156,18 +157,34 @@ export const cancelTrip = (req, res) => {
     if (err) {
       res.status(500).send(err);
     } else if (trip) {
+      // If the start date is in the past, the trip cannot be cancelled
+      if (trip.startDate < new Date()) {
+        return res.status(400).send({ error: 'The trip cannot be cancelled because it has already started' });
+      }
+
       if (trip.state === 'ACTIVE') {
         const { actor } = res.locals;
         if(actor.id === trip.manager.toString()) {
-          trip.state = 'CANCELLED';
-          trip.reasonCancelled = req.query.reasonCancelled;
-          trip.save(err => {
+          
+          // Count the number of accepted applications of the trip
+          applicationModel.countDocuments({ trip: trip.id, state: 'ACCEPTED' }, (err, count) => {
             if (err) {
               res.status(500).send(err);
+            } else if (count > 0) {
+              return res.status(400).send({ error: 'The trip cannot be cancelled because it has applications' });
             } else {
-              res.status(200).json(trip.cleanup());
+              trip.state = 'CANCELLED';
+              trip.reasonCancelled = req.query.reasonCancelled;
+              trip.save((err, trip) => {
+                if (err) {
+                  res.status(500).send(err);
+                } else {
+                  res.json(trip.cleanup());
+                }
+              });
             }
           });
+
         } else {
           return res.status(403).send({ error: 'You are not authorized to cancel this trip' });
         }
