@@ -579,6 +579,63 @@ describe('Trips API endpoints', () => {
         })
     })
 
+    describe('/v1/trips/:tripId/cancel -PATCH ', () =>{
+        it('Should cancel an ACTIVE trip', async() => {
+            // Create a trip to cancel
+            let tripToCancel = await chai.request(server.instance).post('/v1/trips').set('idtoken', manager1Token).send({
+                title: "test.trip.cancel",
+                description: "test.trip.cancel",
+                requirements: ["new requirement"],
+                startDate: "2023-01-01",
+                endDate: "2023-01-09",
+                stages: [
+                    {
+                        title: "stage 1",
+                        description: "sample description",
+                        price: 500
+                    }
+                ]
+            })
+
+            let tripToCancelId = tripToCancel.body.id;
+
+            // Change the status to ACTIVE
+            await tripModel.findOneAndUpdate({ _id: tripToCancelId }, { state: "ACTIVE" });
+
+            // Cancel it
+            const response = await chai.request(server.instance).patch(`/v1/trips/${tripToCancelId}/cancel?reasonCancelled=late`).set('idtoken', manager1Token)
+            expect(response).to.have.status(200);
+        })
+
+        it('Should return an error if the trip belongs to a different user', async() => {
+            // Create a trip to cancel
+            let tripToCancel = await chai.request(server.instance).post('/v1/trips').set('idtoken', manager1Token).send({
+                title: "test.trip.cancel",
+                description: "test.trip.cancel",
+                requirements: ["new requirement"],
+                startDate: "2023-01-01",
+                endDate: "2023-01-09",
+                stages: [
+                    {
+                        title: "stage 1",
+                        description: "sample description",
+                        price: 500
+                    }
+                ]
+            })
+
+            let tripToCancelId = tripToCancel.body.id;
+
+            // Change the status to ACTIVE
+            await tripModel.findOneAndUpdate({ _id: tripToCancelId }, { state: "ACTIVE" });
+
+            // Try to cancel it logged in as a different user
+            const response = await chai.request(server.instance).patch(`/v1/trips/${tripToCancelId}/cancel?reasonCancelled=late`).set('idtoken', manager2Token)
+            expect(response).to.have.status(403);
+        })
+
+    })
+
 })
 
 const cleanTestDatabase = async () => {
