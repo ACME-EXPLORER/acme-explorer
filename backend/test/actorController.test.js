@@ -6,6 +6,7 @@ import server from '../src/app.js';
 import { faker } from '@faker-js/faker';
 import { Roles } from '../src/shared/enums.js';
 import { BasicState } from '../src/shared/enums.js';
+import mongoose from 'mongoose';
 
 describe('Actor API endpoints', () => {
   const base = '/v1/actors';
@@ -195,12 +196,12 @@ describe('Actor API endpoints', () => {
     });
 
     test('should return not found if the actor does not exist', async () => {
-      // Arrange
-      const actor = {_id: faker.lorem.word()};
+      // Arrange 
+      const actor = {_id: new mongoose.Types.ObjectId().toHexString()};
 
       // Act
       const response = await agent.set('idtoken', token).get(`${base}/${actor._id}`);
-      
+
       // Assert
       expect(response.statusCode).toBe(StatusCodes.NOT_FOUND);
     });

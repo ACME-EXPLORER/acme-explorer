@@ -3,6 +3,7 @@ import { BasicState } from '../shared/enums.js';
 import admin from 'firebase-admin';
 import { StatusCodes } from 'http-status-codes';
 import { Roles } from '../shared/enums.js';
+import { RecordNotFound } from '../shared/exceptions.js';
 
 export const findActors = async (req, res) => {
   try {
@@ -13,13 +14,17 @@ export const findActors = async (req, res) => {
   }
 };
 
-export const findActor = async (req, res) => {
+export const findActor = async (req, res, next) => {
   try {
     const actor = await actorModel.findById(req.params.actorId);
+    
+     if (!actor) {
+      return next(new RecordNotFound());
+    }
 
     res.json(actor);
   } catch (error) {
-    res.status(StatusCodes.NOT_FOUND).json(error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
   }
 };
 
