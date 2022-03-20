@@ -444,10 +444,8 @@ describe('Trips API endpoints', () => {
             })
 
             let tripToDeleteId = tripToDelete.body.id;
-            console.log(tripToDeleteId)
 
             const response = await chai.request(server.instance).delete(`/v1/trips/${tripToDeleteId}`).set('idtoken', manager1Token)
-            console.log(response.body)
             expect(response).to.have.status(204);
             
         })
@@ -471,11 +469,9 @@ describe('Trips API endpoints', () => {
             })
 
             let tripToDeleteId = tripToDelete.body.id;
-            console.log(tripToDeleteId)
 
             // Try to delete it logged as a different user
             const response = await chai.request(server.instance).delete(`/v1/trips/${tripToDeleteId}`).set('idtoken', manager2Token)
-            console.log(response.body)
             expect(response).to.have.status(403);
            
         })
@@ -499,16 +495,88 @@ describe('Trips API endpoints', () => {
                 })
     
                 let tripToDeleteId = tripToDelete.body.id;
-                console.log(tripToDeleteId)
 
                 await tripModel.findOneAndUpdate({ _id: tripToDeleteId }, { state: "ACTIVE" });
     
                 
                 const response = await chai.request(server.instance).delete(`/v1/trips/${tripToDeleteId}`).set('idtoken', manager1Token)
-                console.log(response.body)
                 expect(response).to.have.status(400);
             
             })
+    })
+
+    describe('/v1/trips/:tripId/publish – PATCH', () => {
+        it('Should publish an INACTIVE trip', async() => {
+            // Create a trip to publish
+            let tripToPublish = await chai.request(server.instance).post('/v1/trips').set('idtoken', manager1Token).send({
+                title: "test.trip.publish",
+                description: "test.trip.publish",
+                requirements: ["new requirement"],
+                startDate: "2023-01-01",
+                endDate: "2023-01-09",
+                stages: [
+                    {
+                        title: "stage 1",
+                        description: "sample description",
+                        price: 500
+                    }
+                ]
+            })
+
+            let tripToPublishId = tripToPublish.body.id;
+
+            // Publish it
+            const response = await chai.request(server.instance).patch(`/v1/trips/${tripToPublishId}/publish`).set('idtoken', manager1Token)
+            expect(response).to.have.status(200);
+        })
+
+        it('Should return an error if the trip belongs to a different user', async() => {
+            // Create a trip to publish
+            let tripToPublish = await chai.request(server.instance).post('/v1/trips').set('idtoken', manager1Token).send({
+                title: "test.trip.publish",
+                description: "test.trip.publish",
+                requirements: ["new requirement"],
+                startDate: "2023-01-01",
+                endDate: "2023-01-09",
+                stages: [
+                    {
+                        title: "stage 1",
+                        description: "sample description",
+                        price: 500
+                    }
+                ]
+            })
+
+            let tripToPublishId = tripToPublish.body.id;
+
+            // Try to publish it logged as a different user
+            const response = await chai.request(server.instance).patch(`/v1/trips/${tripToPublishId}/publish`).set('idtoken', manager2Token)
+            expect(response).to.have.status(403);
+        })
+
+        it('Should return an error if the trip is ACTIVE', async() => {
+            let tripToPublish = await chai.request(server.instance).post('/v1/trips').set('idtoken', manager1Token).send({
+                title: "test.trip.publish",
+                description: "test.trip.publish",
+                requirements: ["new requirement"],
+                startDate: "2023-01-01",
+                endDate: "2023-01-09",
+                stages: [
+                    {
+                        title: "stage 1",
+                        description: "sample description",
+                        price: 500
+                    }
+                ]
+                })
+
+            // Set the status to ACTIVE
+            await tripModel.findOneAndUpdate({ _id: tripToPublish.body.id }, { state: "ACTIVE" });
+
+            // Try to publish it
+            const response = await chai.request(server.instance).patch(`/v1/trips/${tripToPublish.body.id}/publish`).set('idtoken', manager1Token)
+            expect(response).to.have.status(400);
+        })
     })
 
 })
