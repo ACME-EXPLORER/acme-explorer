@@ -101,8 +101,25 @@ export const findMyApplications = async (req, res) => {
     }
 
     if (actor.role === Roles.MANAGER) {
-      const trips = await tripModel.find({ manager: actor._id });
-      const applications = await Promise.all(trips.map(async trip => await applicationModel.find({ trip: trip._id })));
+      const applications = await tripModel.aggregate([
+        {
+          $match: {
+            manager: actor._id
+          }
+        },
+        {
+          $lookup: {
+            from: 'applications',
+            localField: '_id',
+            foreignField: 'trip',
+            as: 'trip_applications'
+          }
+        },
+        {
+          $unwind: '$trip_applications'
+        }
+      ]);
+
       return res.json(applications);
     }
 
