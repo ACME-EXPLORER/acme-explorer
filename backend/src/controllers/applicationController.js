@@ -101,22 +101,22 @@ export const findMyApplications = async (req, res) => {
     }
 
     if (actor.role === Roles.MANAGER) {
-      const applications = await tripModel.aggregate([
-        {
-          $match: {
-            manager: actor._id
-          }
-        },
+      const applications = await applicationModel.aggregate([
         {
           $lookup: {
-            from: 'applications',
-            localField: '_id',
-            foreignField: 'trip',
-            as: 'trip_applications'
+            from: 'trips',
+            localField: 'trip',
+            foreignField: '_id',
+            as: 'trip_info'
           }
         },
         {
-          $unwind: '$trip_applications'
+          $unwind: '$trip_info'
+        },
+        {
+          $match: {
+            "trip_info.manager": actor._id
+          }
         }
       ]);
 
