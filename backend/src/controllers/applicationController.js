@@ -31,13 +31,10 @@ export const findAllApplications = async (req, res, next) => {
 export const createApplication = async (req, res) => {
   try {
     const { actor } = res.locals;
-
-    const { trip, explorer } = req.body;
-
-    const { startDate } = await tripModel.findById(trip);
+    const { explorer } = req.body;
     const { role } = await actorModel.findById(explorer);
 
-    if (!(actor.role === Roles.EXPLORER || actor.role === Roles.ADMIN)) {
+    if (actor.role !== Roles.ADMIN) {
       return res.status(StatusCodes.METHOD_NOT_ALLOWED).send('You cannot perform this operation');
     }
 
@@ -45,11 +42,46 @@ export const createApplication = async (req, res) => {
       return res.status(StatusCodes.BAD_REQUEST).send('The provided actor must be an explorer');
     }
 
+    const newApplication = new applicationModel(req.body);
+    const application = await newApplication.save();
+    return res.status(StatusCodes.CREATED).json(application);
+  } catch (error) {
+    if (error.name === 'ValidationError') {
+      res.status(StatusCodes.UNPROCESSABLE_ENTITY).json(error);
+    } else {
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+    }
+  }
+};
+
+export const applyToTrip = async (req, res) => {
+  try {
+    const { actor } = res.locals;
+
+    if (Object.keys(req.body).length === 0) {
+      return res.status(StatusCodes.BAD_REQUEST).send('You need to send a trip id and some optional comments.');
+    }
+
+    const { startDate, state: tripStage } = await tripModel.findById(req.body.trip);
+
+    if (actor.role !== Roles.EXPLORER) {
+      return res.status(StatusCodes.METHOD_NOT_ALLOWED).send('You cannot perform this operation');
+    }
+
     if (startDate < new Date()) {
       return res.status(StatusCodes.BAD_REQUEST).send("Can't apply to a trip in the past.");
     }
 
-    const newApplication = new applicationModel(req.body);
+    if (tripStage !== 'ACTIVE') {
+      return res.status(StatusCodes.METHOD_NOT_ALLOWED).send('You can only apply to active trips');
+    }
+
+    const newApplication = new applicationModel({
+      ...req.body,
+      explorer: actor._id,
+      state: 'pending',
+      reasonRejected: null
+    });
     const application = await newApplication.save();
     return res.status(StatusCodes.CREATED).json(application);
   } catch (error) {
