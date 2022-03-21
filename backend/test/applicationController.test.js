@@ -104,6 +104,7 @@ describe('Applications API endpoints', () => {
       startDate: '2022-03-25',
       endDate: '2022-03-28',
       manager: manager._id,
+      state: "ACTIVE",
       stages: [
         {
           title: 'first part of stage',
@@ -163,21 +164,6 @@ describe('Applications API endpoints', () => {
       };
 
       const response = await agent
-        .set('idtoken', explorer2Token)
-        .post(BASE_URL)
-        .send(payload);
-
-      expect(response.statusCode).toBe(StatusCodes.CREATED);
-      expect(response.body).toBeInstanceOf(Object);
-    });
-
-    test('should create a new application for an explorer if actor is an "admin"', async () => {
-      const payload = {
-        trip: trip._id,
-        explorer: explorer._id
-      };
-
-      const response = await agent
         .set('idtoken', adminToken)
         .post(BASE_URL)
         .send(payload);
@@ -186,7 +172,7 @@ describe('Applications API endpoints', () => {
       expect(response.body).toBeInstanceOf(Object);
     });
 
-    test('should throw an error if the provided actor is not an explorer', async () => {
+    test('should throw an "FORBIDDEN" if the actor is not an admin', async () => {
       const payload = {
         trip: trip._id,
         explorer: manager._id
@@ -197,10 +183,10 @@ describe('Applications API endpoints', () => {
         .post(BASE_URL)
         .send(payload);
 
-      expect(response.statusCode).toBe(StatusCodes.BAD_REQUEST);
+      expect(response.statusCode).toBe(StatusCodes.FORBIDDEN);
     });
 
-    test('should throw an error if the actor is not an explorer or an admin', async () => {
+    test('should throw an error if the actor is not an admin', async () => {
       const payload = {
         trip: trip._id,
         explorer: explorer._id
@@ -212,6 +198,87 @@ describe('Applications API endpoints', () => {
         .send(payload);
 
       expect(response.statusCode).toBe(StatusCodes.FORBIDDEN);
+    });
+  });
+
+  describe('applyToTrips', () => {
+    test('should create a new application for an explorer', async () => {
+      const payload = {
+        trip: trip._id,
+        comments: ["epic", "epic 2"]
+      };
+
+      const response = await agent
+        .set('idtoken', explorer2Token)
+        .post('/v1/apply')
+        .send(payload);
+
+      expect(response.statusCode).toBe(StatusCodes.CREATED);
+      expect(response.body).toBeInstanceOf(Object);
+    });
+
+    test('should throw an error if req.body is empty', async () => {
+      const payload = {
+      };
+
+      const response = await agent
+        .set('idtoken', explorer2Token)
+        .post('/v1/apply')
+        .send(payload);
+
+      expect(response.statusCode).toBe(StatusCodes.BAD_REQUEST);
+    });
+
+    test('should throw an error if actor is not an explorer', async () => {
+      const payload = {
+        trip: trip._id,
+        comments: ["epic", "epic 2"]
+      };
+
+      const response = await agent
+        .set('idtoken', managerToken)
+        .post('/v1/apply')
+        .send(payload);
+
+      expect(response.statusCode).toBe(StatusCodes.FORBIDDEN);
+    });
+
+    test('should not let an explorer apply to old trips', async () => {
+      const oldTrip = await tripModel.findOneAndUpdate(
+        { _id: trip._id },
+        { startDate: '1990-01-01' },
+        { new: true }
+      );
+
+      const payload = {
+        trip: oldTrip._id
+      };
+
+      const response = await agent
+        .set('idtoken', explorer2Token)
+        .post('/v1/apply')
+        .send(payload);
+
+      expect(response.statusCode).toBe(StatusCodes.METHOD_NOT_ALLOWED);
+    });
+
+    test('should not let an explorer apply to inactives trips', async () => {
+      const inactiveTrip = await tripModel.findOneAndUpdate(
+        { _id: trip._id },
+        { state: 'INACTIVE' },
+        { new: true }
+      );
+
+      const payload = {
+        trip: inactiveTrip._id
+      };
+
+      const response = await agent
+        .set('idtoken', explorer2Token)
+        .post('/v1/apply')
+        .send(payload);
+
+      expect(response.statusCode).toBe(StatusCodes.METHOD_NOT_ALLOWED);
     });
   });
 
