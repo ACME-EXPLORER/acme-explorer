@@ -42,6 +42,10 @@ To start the local server, run the command:
    ```
    docker-compose up backend
    ```
+
+## Documentation
+The API is documented with Swagger. Check it out on: `http://localhost:3000/docs/`.
+
 ## Populate
 When the container is created, the database is populated with some actors (all roles), trips, configuration, sponsorships and finders. By default, the users are (password: abc123):
 
@@ -49,10 +53,6 @@ When the container is created, the database is populated with some actors (all r
 - manager@test.com
 - sponsor@test.com
 - admin@test.com
-
-## Documentation
-
-The API is documented with Swagger. Check it out on: `http://localhost:3000/docs/`.
 
 ## Tips
 
@@ -77,3 +77,7 @@ If you have mongo installed in your local machine, there may be collissions when
    ```
    mongodb://admin:explorer123@127.0.0.1:27018
    ```
+
+## Additional Info
+
+Some endpoints were separated in two different endpoints to only allow certain roles. For example, operations on `/v1/applications` are only allowed if the actor is an admin. An additional endpoint called `/v1/applications/apply` was created to allow explorers to apply to a trip, which made validating data a lot easier and more streamlined on both endpoints. Other examples may be `/v1/actors` as a private, admin only endpoint; and `/v1/login` and `/v1/register` as public endpoints.
