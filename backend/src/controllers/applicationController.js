@@ -185,13 +185,7 @@ export const acceptApplication = async (req, res, next) => {
       return next(new RecordNotFound());
     }
 
-    if (
-      !(
-        actor._id.toString() === application.trip.manager.toString() ||
-        actor.role === Roles.MANAGER ||
-        actor.role === Roles.ADMIN
-      )
-    ) {
+    if (!(actor.role === Roles.ADMIN || actor._id.toString() === application.trip.manager.toString())) {
       return res.status(StatusCodes.FORBIDDEN).send('You do not have access.');
     }
 
@@ -216,21 +210,14 @@ export const acceptApplication = async (req, res, next) => {
 export const rejectApplication = async (req, res, next) => {
   try {
     const { actor } = res.locals;
-
-    const application = await applicationModel.findById(req.params.applicationId);
-
-    if (
-      !(
-        actor._id.toString() === application.trip.manager.toString() ||
-        actor.role === Roles.MANAGER ||
-        actor.role === Roles.ADMIN
-      )
-    ) {
-      return res.status(StatusCodes.FORBIDDEN).send('You do not have access.');
-    }
+    const application = await applicationModel.findById(req.params.applicationId).populate('trip');
 
     if (!application) {
       return next(new RecordNotFound());
+    }
+
+    if (!(actor.role === Roles.ADMIN || actor._id.toString() === application.trip.manager.toString())) {
+      return res.status(StatusCodes.FORBIDDEN).send('You do not have access.');
     }
 
     if (application.state !== ApplicationState.PENDING) {
@@ -311,7 +298,7 @@ export const payApplication = async (req, res, next) => {
       return res.status(StatusCodes.UNAUTHORIZED).send('Not authorized.');
     }
 
-    if (!(actor.role === Roles.ADMIN || actor._id.toString() === application.exponsor.toString())) {
+    if (!(actor.role === Roles.ADMIN || actor._id.toString() === application.explorer.toString())) {
       return res.status(StatusCodes.METHOD_NOT_ALLOWED).send('You cannot perform this operation.');
     }
 
