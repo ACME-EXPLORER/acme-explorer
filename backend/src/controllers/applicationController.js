@@ -31,8 +31,7 @@ export const findAllApplications = async (req, res, next) => {
 export const createApplication = async (req, res) => {
   try {
     const { actor } = res.locals;
-    const { explorer } = req.body;
-    const { role } = await actorModel.findById(explorer);
+    const { role } = await actorModel.findById(req.body.explorer);
 
     if (actor.role !== Roles.ADMIN) {
       return res.status(StatusCodes.METHOD_NOT_ALLOWED).send('You cannot perform this operation');
@@ -172,6 +171,11 @@ export const updateApplication = async (req, res) => {
 
     if (!(actor.role === Roles.ADMIN || actor._id.toString() === explorer.toString())) {
       return res.status(StatusCodes.METHOD_NOT_ALLOWED).send('You cannot perform this operation.');
+    }
+
+    if (actor.role !== Roles.ADMIN) {
+      delete req.body.state;
+      delete req.body.reasonRejected;
     }
 
     const application = await applicationModel.findOneAndUpdate({ _id: req.params.applicationId }, req.body, {

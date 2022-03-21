@@ -104,7 +104,7 @@ describe('Applications API endpoints', () => {
       startDate: '2022-03-25',
       endDate: '2022-03-28',
       manager: manager._id,
-      state: "ACTIVE",
+      state: 'ACTIVE',
       stages: [
         {
           title: 'first part of stage',
@@ -205,7 +205,7 @@ describe('Applications API endpoints', () => {
     test('should create a new application for an explorer', async () => {
       const payload = {
         trip: trip._id,
-        comments: ["epic", "epic 2"]
+        comments: ['epic', 'epic 2']
       };
 
       const response = await agent
@@ -218,8 +218,7 @@ describe('Applications API endpoints', () => {
     });
 
     test('should throw an error if req.body is empty', async () => {
-      const payload = {
-      };
+      const payload = {};
 
       const response = await agent
         .set('idtoken', explorer2Token)
@@ -232,7 +231,7 @@ describe('Applications API endpoints', () => {
     test('should throw an error if actor is not an explorer', async () => {
       const payload = {
         trip: trip._id,
-        comments: ["epic", "epic 2"]
+        comments: ['epic', 'epic 2']
       };
 
       const response = await agent
@@ -244,11 +243,7 @@ describe('Applications API endpoints', () => {
     });
 
     test('should not let an explorer apply to old trips', async () => {
-      const oldTrip = await tripModel.findOneAndUpdate(
-        { _id: trip._id },
-        { startDate: '1990-01-01' },
-        { new: true }
-      );
+      const oldTrip = await tripModel.findOneAndUpdate({ _id: trip._id }, { startDate: '1990-01-01' }, { new: true });
 
       const payload = {
         trip: oldTrip._id
@@ -263,11 +258,7 @@ describe('Applications API endpoints', () => {
     });
 
     test('should not let an explorer apply to inactives trips', async () => {
-      const inactiveTrip = await tripModel.findOneAndUpdate(
-        { _id: trip._id },
-        { state: 'INACTIVE' },
-        { new: true }
-      );
+      const inactiveTrip = await tripModel.findOneAndUpdate({ _id: trip._id }, { state: 'INACTIVE' }, { new: true });
 
       const payload = {
         trip: inactiveTrip._id
