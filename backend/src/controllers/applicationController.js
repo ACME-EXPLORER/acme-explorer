@@ -69,7 +69,7 @@ export const applyToTrip = async (req, res) => {
     }
 
     if (startDate < new Date()) {
-      return res.status(StatusCodes.BAD_REQUEST).send("Can't apply to a trip in the past.");
+      return res.status(StatusCodes.METHOD_NOT_ALLOWED).send("Can't apply to a trip in the past.");
     }
 
     if (tripStage !== 'ACTIVE') {
