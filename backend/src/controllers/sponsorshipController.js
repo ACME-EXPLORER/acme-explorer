@@ -72,7 +72,7 @@ export const sponsorTrip = async (req, res) => {
       return res.status(StatusCodes.METHOD_NOT_ALLOWED).send('You can only sponsor active trips');
     }
 
-    const newSponsor = new applicationModel({
+    const newSponsor = new sponsorshipModel({
       ...req.body,
       sponsor: actor._id,
       state: 'inactive'
@@ -198,7 +198,8 @@ export const paySponsorship = async (req, res) => {
     if (isPaymentApproved) {
       const activeSponsorship = await sponsorshipModel.findOneAndUpdate(
         { _id: req.params.sponsorshipId },
-        { state: BasicState.ACTIVE }
+        { state: BasicState.ACTIVE },
+        { new: true }
       );
       return res.json(activeSponsorship);
     }
