@@ -68,9 +68,9 @@ export const dataWarehouseRoutes = app => {
    * @openapi
    * /v1/datawarehouse/cube:
    *   get:
-   *     description: Get a list of all indicators
+   *     description: Get a list all data in the created cube
    *     tags: [Dashboard]
-   *      parameters:
+   *     parameters:
    *       - name: e
    *         in: query
    *         required: false
@@ -91,7 +91,7 @@ export const dataWarehouseRoutes = app => {
    *         required: false
    *         description: The new computation period
    *         type: string
-   *         enum: [everyHour,everyMinute,everyTenSeconds,everySecond]
+   *         enum: [equal, not equal, greater than, smaller than, greater than or equal, smaller than or equal]
    *     responses:
    *       200:
    *         description: List all explorers that matched the search criteria
