@@ -210,7 +210,7 @@ describe('Applications API endpoints', () => {
 
       const response = await agent
         .set('idtoken', explorer2Token)
-        .post('/v1/apply')
+        .post('/v1/applications/apply')
         .send(payload);
 
       expect(response.statusCode).toBe(StatusCodes.CREATED);
@@ -222,7 +222,7 @@ describe('Applications API endpoints', () => {
 
       const response = await agent
         .set('idtoken', explorer2Token)
-        .post('/v1/apply')
+        .post('/v1/applications/apply')
         .send(payload);
 
       expect(response.statusCode).toBe(StatusCodes.BAD_REQUEST);
@@ -236,7 +236,7 @@ describe('Applications API endpoints', () => {
 
       const response = await agent
         .set('idtoken', managerToken)
-        .post('/v1/apply')
+        .post('/v1/applications/apply')
         .send(payload);
 
       expect(response.statusCode).toBe(StatusCodes.FORBIDDEN);
@@ -251,7 +251,7 @@ describe('Applications API endpoints', () => {
 
       const response = await agent
         .set('idtoken', explorer2Token)
-        .post('/v1/apply')
+        .post('/v1/applications/apply')
         .send(payload);
 
       expect(response.statusCode).toBe(StatusCodes.METHOD_NOT_ALLOWED);
@@ -266,7 +266,7 @@ describe('Applications API endpoints', () => {
 
       const response = await agent
         .set('idtoken', explorer2Token)
-        .post('/v1/apply')
+        .post('/v1/applications/apply')
         .send(payload);
 
       expect(response.statusCode).toBe(StatusCodes.METHOD_NOT_ALLOWED);

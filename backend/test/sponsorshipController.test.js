@@ -192,7 +192,7 @@ describe('Sponsorships API endpoints', () => {
 
       const response = await agent
         .set('idtoken', sponsorToken)
-        .post('/v1/sponsorTrip')
+        .post('/v1/sponsorships/sponsortrip')
         .send(payload);
 
       expect(response.statusCode).toBe(StatusCodes.CREATED);
@@ -204,7 +204,7 @@ describe('Sponsorships API endpoints', () => {
 
       const response = await agent
         .set('idtoken', sponsorToken)
-        .post('/v1/sponsorTrip')
+        .post('/v1/sponsorships/sponsortrip')
         .send(payload);
 
       expect(response.statusCode).toBe(StatusCodes.BAD_REQUEST);
@@ -219,7 +219,7 @@ describe('Sponsorships API endpoints', () => {
 
       const response = await agent
         .set('idtoken', managerToken)
-        .post('/v1/sponsorTrip')
+        .post('/v1/sponsorships/sponsortrip')
         .send(payload);
 
       expect(response.statusCode).toBe(StatusCodes.FORBIDDEN);
@@ -236,7 +236,7 @@ describe('Sponsorships API endpoints', () => {
 
       const response = await agent
         .set('idtoken', sponsorToken)
-        .post('/v1/sponsorTrip')
+        .post('/v1/sponsorships/sponsortrip')
         .send(payload);
 
       expect(response.statusCode).toBe(StatusCodes.METHOD_NOT_ALLOWED);
@@ -253,7 +253,7 @@ describe('Sponsorships API endpoints', () => {
 
       const response = await agent
         .set('idtoken', sponsorToken)
-        .post('/v1/sponsorTrip')
+        .post('/v1/sponsorships/sponsortrip')
         .send(payload);
 
       expect(response.statusCode).toBe(StatusCodes.METHOD_NOT_ALLOWED);

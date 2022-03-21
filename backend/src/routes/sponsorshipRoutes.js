@@ -60,7 +60,7 @@ export const sponsorshipRoutes = app => {
 
   /**
    * @openapi
-   * /v1/sponsorTrip:
+   * /v1/sponsorships/sponsortrip:
    *   post:
    *      description: Create a sponsorship for a trip
    *      tags: [Sponsorships]
@@ -88,7 +88,7 @@ export const sponsorshipRoutes = app => {
    *              schema:
    *                $ref: '#/components/schemas/sponsorship'
    */
-  app.route('/v1/sponsorTrip').post(verifyUser([Roles.SPONSOR]), sponsorTrip);
+  app.route('/v1/sponsorships/sponsortrip').post(verifyUser([Roles.SPONSOR]), sponsorTrip);
 
   /**
    * @openapi

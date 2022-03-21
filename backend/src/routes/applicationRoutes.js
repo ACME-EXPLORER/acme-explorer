@@ -62,7 +62,7 @@ export const applicationRoutes = app => {
 
   /**
    * @openapi
-   * /v1/apply:
+   * /v1/applications/apply:
    *   post:
    *      description: Apply to a trip
    *      tags: [Applications]
@@ -88,7 +88,7 @@ export const applicationRoutes = app => {
    *              schema:
    *                $ref: '#/components/schemas/application'
    */
-  app.route('/v1/apply').post(verifyUser([Roles.EXPLORER]), applyToTrip);
+  app.route('/v1/applications/apply').post(verifyUser([Roles.EXPLORER]), applyToTrip);
 
   /**
    * @openapi
