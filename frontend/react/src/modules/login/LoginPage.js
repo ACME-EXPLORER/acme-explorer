@@ -91,7 +91,7 @@ export function LoginPage () {
 
   return (
     state.loaded
-      ? <LoginPageLoaded />
+      ? LoginPageLoaded
       : <div className='loader' />
   );
 }

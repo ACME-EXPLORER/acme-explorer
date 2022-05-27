@@ -127,3 +127,7 @@ keys
 terraform.tfstate
 terraform.tfstate.backup
 .terraform.lock.hcl
+
+# Cypress
+cypress/videos
+cypress/screenshots

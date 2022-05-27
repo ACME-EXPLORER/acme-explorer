@@ -29,6 +29,7 @@ jobs:
               cache-dependency-path: ./frontend/react/package-lock.json
 
           - run: npm ci
+          - run: npm run lint
 
   test:
       name: Test
@@ -43,3 +44,41 @@ jobs:
               cache-dependency-path: ./frontend/react/package-lock.json
 
           - run: npm ci
+          - run: npm test
+
+  test-e2e:
+      name: Test E2E
+      runs-on: ubuntu-latest
+      needs: test
+      steps:
+          - uses: actions/checkout@v2
+          - uses: actions/setup-node@v2
+            with:
+              node-version: '16'
+              cache: 'npm'
+              cache-dependency-path: ./frontend/react/package-lock.json
+
+          - uses: SpicyPizza/create-envfile@v1.3
+            with:
+              envkey_NAME: acme-explorer
+              envkey_PORT: 3000
+              envkey_SERVER_TIMEOUT: 20000
+              envkey_DB_URI: mongodb://admin:explorer123@mongo:27017/acme-explorer
+              envkey_REDIS_URI: redis://redis:6379
+              envkey_SECRET: ${{ secrets.JWT_SECRET }}
+              envkey_GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+              envkey_FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+              directory: backend/
+              file_name: .env
+              fail_on_empty: false
+
+          - run: npm ci
+          - run: docker-compose up -d gateway
+          - name: Cypress test
+            run: npm run test:e2e
+
+          - uses: actions/upload-artifact@master
+            with:
+              name: screenshots
+              path: cypress/screenshots
+              if: failure()
