@@ -20,94 +20,98 @@ export function RegisterPage () {
         password: '',
         password_confirm: '',
         phone: '',
-        address: '',
+        address: ''
       },
       error: {}
     }
   });
 
+  const RegisterPageLoaded = (
+    <>
+      <LoginContainer>
+        <img
+          className='mb-4 logo-img' src='images/logo.png'
+          alt='Logo'
+        />
+        <form className='form' name='signup'>
+          <FieldGroup
+            id='email'
+            name='email'
+            type='email'
+            placeholder='correo@email.com'
+            required
+            onChange={onInputChange}
+            help={state.error.email}
+          />
+          <FieldGroup
+            id='password'
+            name='password'
+            type='password'
+            placeholder='contraseña'
+            required
+            autoComplete='true'
+            min='6'
+            onChange={onInputChange}
+            help={state.error.password}
+          />
+          <FieldGroup
+            id='password_confirm'
+            name='password_confirm'
+            type='password'
+            placeholder='confirma contraseña'
+            required
+            autoComplete='true'
+            min='6'
+            onChange={onInputChange}
+            help={state.error.password_confirm}
+          />
+          <FieldGroup
+            id='name'
+            name='name'
+            type='text'
+            placeholder='nombre'
+            required
+            onChange={onInputChange}
+            help={state.error.name}
+          />
+          <FieldGroup
+            id='surname'
+            name='surname'
+            type='text'
+            placeholder='apellido'
+            required
+            onChange={onInputChange}
+            help={state.error.surname}
+          />
+          <FieldGroup
+            id='phone'
+            name='phone'
+            type='tel'
+            pattern='[0-9]+'
+            placeholder='teléfono'
+            required
+            maxLength='15'
+            onChange={onInputChange}
+            help={state.error.phone}
+          />
+          <FieldGroup
+            id='address'
+            name='address'
+            type='text'
+            placeholder='dirección completa ...'
+            onChange={onInputChange}
+          />
+          <Button onClick={onSubmit} color='success' className='btn-lg col-12 my-4'>¡Regístrame!</Button>
+          <hr className='my-2' />
+          <Link to='/login'><span className='text-center new-account'>¿ya tienes una cuenta?</span></Link>
+        </form>
+      </LoginContainer>
+    </>
+  );
+
   return (
     state.loaded
-      ? <>
-        <LoginContainer>
-          <img
-            className='mb-4 logo-img' src='images/logo.png'
-            alt='Logo'
-          />
-          <form className='form' name='signup'>
-          <FieldGroup
-              id='email'
-              name='email'
-              type='email'
-              placeholder='correo@email.com'
-              required
-              onChange={onInputChange}
-              help={state.error.email}
-            />
-            <FieldGroup
-              id='password'
-              name='password'
-              type='password'
-              placeholder='contraseña'
-              required
-              autoComplete='true'
-              min='6'
-              onChange={onInputChange}
-              help={state.error.password}
-            />
-            <FieldGroup
-              id='password_confirm'
-              name='password_confirm'
-              type='password'
-              placeholder='confirma contraseña'
-              required
-              autoComplete='true'
-              min='6'
-              onChange={onInputChange}
-              help={state.error.password_confirm}
-            />
-            <FieldGroup
-              id='name'
-              name='name'
-              type='text'
-              placeholder='nombre'
-              required
-              onChange={onInputChange}
-              help={state.error.name}
-            />
-            <FieldGroup
-              id='surname'
-              name='surname'
-              type='text'
-              placeholder='apellido'
-              required
-              onChange={onInputChange}
-              help={state.error.surname}
-            />
-            <FieldGroup
-              id='phone'
-              name='phone'
-              type='tel'
-              pattern='[0-9]+'
-              placeholder='teléfono'
-              required
-              maxLength='15'
-              onChange={onInputChange}
-              help={state.error.phone}
-            />
-            <FieldGroup
-              id='address'
-              name='address'
-              type='text'
-              placeholder='dirección completa ...'
-              onChange={onInputChange}
-            />
-            <Button onClick={onSubmit} color='success' className='btn-lg col-12 my-4'>¡Regístrame!</Button>
-            <hr className='my-2' />
-            <Link to='/login'><span className='text-center new-account'>¿ya tienes una cuenta?</span></Link>
-          </form>
-        </LoginContainer>
-      </>
+      ? <RegisterPageLoaded />
       : <div className='loader' />
   );
 }

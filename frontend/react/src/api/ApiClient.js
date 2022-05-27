@@ -78,7 +78,7 @@ export default class ApiClient {
 
   _setExtraHeaders () {
     const defaultHeaders = {
-      'idtoken': localStorage.getItem('token')
+      idtoken: localStorage.getItem('token')
     };
     this.extraHeaders = { ...this.extraHeaders, ...defaultHeaders };
   }

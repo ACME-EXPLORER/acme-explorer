@@ -15,8 +15,8 @@ export function AdminPage () {
     loadUsers({ state, setState });
   }, []);
 
-  return (state.loaded
-    ? <>
+  const AdminPageLoaded = (
+    <>
       <Container fluid className='py-5'>
         <Row>
           <Col
@@ -50,6 +50,10 @@ export function AdminPage () {
         </Row>
       </Container>
     </>
+  );
+
+  return (state.loaded
+    ? <AdminPageLoaded />
     : <div className='loader' />);
 }
 

@@ -4,10 +4,8 @@ import {
   UncontrolledDropdown, DropdownItem, DropdownMenu,
   DropdownToggle, NavbarToggler, Collapse
 } from 'reactstrap';
-import { useStore } from '../../state/storeHooks';
 
 export function NavBar ({ user, logout, toggleProfileModal }) {
-
   return (
     <Navbar
       color='dark'

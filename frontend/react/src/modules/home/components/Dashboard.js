@@ -3,8 +3,8 @@ import api from '../../../api';
 import { toast } from 'react-toastify';
 import { ListTrip } from './ListTrip';
 import { Container, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
-import {FinderSearch} from "./FinderSearch";
-import {store} from "../../../state/store";
+import { FinderSearch } from './FinderSearch';
+import { store } from '../../../state/store';
 
 export function Dashboard () {
   const { user } = store.getState().app;
@@ -21,18 +21,22 @@ export function Dashboard () {
 
   useEffect(() => {
     loadTrips({ state, setState });
-    if(user){
-     loadFinder( {state, setState})
+    if (user) {
+      loadFinder({ state, setState });
     }
   }, [state.page, user]);
 
-  return (state.loaded
-    ? <Container id='dashboard'>
-      {state.loadedFinder ? <FinderSearch handleOnSearch={({state}) => onSearchTrips({setState, state})}
-                                          selectedFinder={state.selectedFinder}
-                                          onSaveSearch={(model => onSaveSearch({setState, model}))}
-                                          onSelectFinder={(selectedFinder) => onSelectFinder({state, setState, selectedFinder})}
-                                          user={user} finders={state.finders}/> : <div className='loader' />}
+  const DashboardLoaded = (
+    <Container id='dashboard'>
+      {state.loadedFinder
+        ? <FinderSearch
+            handleOnSearch={({ state }) => onSearchTrips({ setState, state })}
+            selectedFinder={state.selectedFinder}
+            onSaveSearch={(model => onSaveSearch({ setState, model }))}
+            onSelectFinder={(selectedFinder) => onSelectFinder({ state, setState, selectedFinder })}
+            user={user} finders={state.finders}
+          />
+        : <div className='loader' />}
       <ListTrip trips={state.trips} className='py-2' />
       <Pagination listClassName='justify-content-center'>
         <PaginationItem>
@@ -68,6 +72,10 @@ export function Dashboard () {
         </PaginationItem>
       </Pagination>
     </Container>
+  );
+
+  return (state.loaded
+    ? <DashboardLoaded />
     : <div className='loader' />);
 }
 
@@ -96,19 +104,19 @@ async function loadFinder ({ setState }) {
   }
 }
 
-async function onSelectFinder ({state, setState, selectedFinder}) {
-  if(!selectedFinder){
-   setState((state) => ({ ...state, selectedFinder: {} }));
-   loadTrips({state, setState});
-  }else{
-   setState((state) => ({ ...state, loaded: false }));
-  try {
-    const { records, pages } = await api.finder.getTrips(selectedFinder._id);
-    setState((state) => ({ ...state, selectedFinder: selectedFinder, pages: Math.ceil(pages), trips: records, loaded: true }));
-  } catch (e) {
-    setState((state) => ({ ...state, loaded: true }));
-    toast.error(`Error al buscar en los viajes. ${e.message}`);
-  }
+async function onSelectFinder ({ state, setState, selectedFinder }) {
+  if (!selectedFinder) {
+    setState((state) => ({ ...state, selectedFinder: {} }));
+    loadTrips({ state, setState });
+  } else {
+    setState((state) => ({ ...state, loaded: false }));
+    try {
+      const { records, pages } = await api.finder.getTrips(selectedFinder._id);
+      setState((state) => ({ ...state, selectedFinder: selectedFinder, pages: Math.ceil(pages), trips: records, loaded: true }));
+    } catch (e) {
+      setState((state) => ({ ...state, loaded: true }));
+      toast.error(`Error al buscar en los viajes. ${e.message}`);
+    }
   }
 }
 
@@ -127,12 +135,10 @@ async function onSaveSearch ({ setState, model }) {
   setState((state) => ({ ...state, loaded: false }));
   try {
     const record = await api.finder.create(model);
-    onSelectFinder({setState, selectedFinder: record});
-    loadFinder({setState});
+    onSelectFinder({ setState, selectedFinder: record });
+    loadFinder({ setState });
   } catch (e) {
     setState((state) => ({ ...state, loaded: true }));
     toast.error(`Error al guardar un finder. ${e.message}`);
   }
 }
-
-

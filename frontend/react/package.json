@@ -11,7 +11,9 @@
     "build": "webpack --config config/webpack.config.js --mode=production --node-env=production",
     "build:dev": "webpack --config config/webpack.config.js --mode=development",
     "lint": "semistandard src/",
-    "test": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles --testMatch='**/tests.js' --coverage"
+    "lint:fix": "semistandard --fix src/",
+    "test": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles --testMatch='**/tests.js' --coverage",
+    "test:e2e": "cross-env npx cypress run"
   },
   "pre-commit": [
     "lint"
@@ -67,6 +69,9 @@
       "localStorage",
       "location",
       "FormData"
+    ],
+    "ignore": [
+      "src/modules/login/ConfirmationPage.js"
     ]
   },
   "babel": {

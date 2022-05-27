@@ -25,16 +25,20 @@ export function ConfirmationPage () {
     }
   }, [state.count]);
 
-  return (state.loaded
-    ? <div className='d-flex flex-column py-5 justify-content-center align-items-center'>
+  const ConfirmationPageLoaded = (
+    <div className='d-flex flex-column py-5 justify-content-center align-items-center'>
       {state.error
         ? <div className='alert alert-danger' role='alert'>
           {state.message} Redireccionando al login en {state.count} ...
-        </div>
+          </div>
         : <div className='alert alert-success' role='alert'>
           {state.message} Redireccionando al login en {state.count} ...
-        </div>}
-      </div>
+          </div>}
+    </div>
+  );
+
+  return (state.loaded
+    ? <ConfirmationPageLoaded />
     : <div className='loader' />);
 }
 

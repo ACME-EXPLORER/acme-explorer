@@ -11,13 +11,13 @@ class FinderAPI extends Base {
     return records;
   }
 
-  async getTrips(id) {
+  async getTrips (id) {
     const url = [this.base, '/', id, '/', 'trips'].join('');
     const records = await this.apiClient.get(url);
     return {
       records: records,
       pages: 1
-    }
+    };
   }
 }
 

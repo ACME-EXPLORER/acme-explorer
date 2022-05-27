@@ -22,71 +22,76 @@ export function LoginPage () {
       error: {}
     }
   });
+
+  const LoginPageLoaded = (
+    <>
+      <SweetAlert
+        title='No te preocupes ...'
+        content='Danos tu correo registrado'
+        type='input'
+        placeholder='correo@email.com'
+        show={state.model.forgot}
+        onConfirm={(email) => onForgetPassword({ email, setState })}
+        onCancel={() => toggleSweetAlert({ setState })}
+        validationMsg='¡Debes ingresar un correo!'
+      />
+      <LoginContainer>
+        <img
+          className='mb-4 logo-img' src='images/logo.png'
+          alt='Logo'
+        />
+        <form className='form' name='login'>
+          <FieldGroup
+            id='email'
+            name='email'
+            type='email'
+            placeholder='correo@email.com'
+            bsSize='lg'
+            required
+            onChange={onInputChange}
+            help={state.error.email}
+          />
+
+          <FieldGroup
+            id='password'
+            name='password'
+            type='password'
+            placeholder='contraseña'
+            required
+            autoComplete='true'
+            min='6'
+            bsSize='lg'
+            onChange={onInputChange}
+            help={state.error.password}
+          />
+          <button
+            className='btn btn-lg btn-success btn-block'
+            onClick={onSubmit}
+            type='submit'
+          >
+            Iniciar Sesión
+          </button>
+
+          <hr className='my-4' />
+          <div>
+            <Link to='/register'><span className='text-center new-account'>Regístrate</span></Link>
+          </div>
+          <div>
+            <a
+              role='button' onClick={(event) => toggleSweetAlert({ event, setState, value: true })}
+              className='text-center'
+            >
+              ¿Perdiste la contraseña?
+            </a>
+          </div>
+        </form>
+      </LoginContainer>
+    </>
+  );
+
   return (
     state.loaded
-      ? <>
-        <SweetAlert
-          title='No te preocupes ...'
-          content='Danos tu correo registrado'
-          type='input'
-          placeholder='correo@email.com'
-          show={state.model.forgot}
-          onConfirm={(email) => onForgetPassword({ email, setState })}
-          onCancel={() => toggleSweetAlert({ setState })}
-          validationMsg='¡Debes ingresar un correo!'
-        />
-        <LoginContainer>
-          <img
-            className='mb-4 logo-img' src='images/logo.png'
-            alt='Logo'
-          />
-          <form className='form' name='login'>
-            <FieldGroup
-              id='email'
-              name='email'
-              type='email'
-              placeholder='correo@email.com'
-              bsSize='lg'
-              required
-              onChange={onInputChange}
-              help={state.error.email}
-            />
-
-            <FieldGroup
-              id='password'
-              name='password'
-              type='password'
-              placeholder='contraseña'
-              required
-              autoComplete='true'
-              min='6'
-              bsSize='lg'
-              onChange={onInputChange}
-              help={state.error.password}
-            />
-            <button
-              className='btn btn-lg btn-success btn-block'
-              onClick={onSubmit}
-              type='submit'
-            >
-              Iniciar Sesión
-            </button>
-
-            <hr className='my-4' />
-            <div>
-              <Link to='/register'><span className='text-center new-account'>Regístrate</span></Link>
-            </div>
-            <div>
-              <a
-                role='button' onClick={(event) => toggleSweetAlert({ event, setState, value: true })}
-                className='text-center'
-              >
-                ¿Perdiste la contraseña?
-              </a>
-            </div>
-          </form>
-        </LoginContainer>
-      </>
+      ? <LoginPageLoaded />
       : <div className='loader' />
   );
 }

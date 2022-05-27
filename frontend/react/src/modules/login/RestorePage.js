@@ -24,8 +24,9 @@ export function RestorePage () {
   });
 
   if (!state.model.token) return <Navigate to='/' />;
-  return (state.loaded
-    ? <LoginContainer>
+
+  const RestorePageLoaded = (
+    <LoginContainer>
       <img
         className='mb-4 logo-img' src='images/logo.png'
         alt='Logo'
@@ -64,6 +65,10 @@ export function RestorePage () {
         </button>
       </form>
     </LoginContainer>
+  );
+
+  return (state.loaded
+    ? <RestorePageLoaded />
     : <div className='loader' />);
 }
 
