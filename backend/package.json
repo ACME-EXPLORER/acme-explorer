@@ -12,7 +12,8 @@
     "format": "prettier --write '{src,test}/**/*.js'",
     "lint": "eslint '{src,apps,libs,test}/**/*.js'",
     "lint:fix": "npm run lint -- --fix",
-    "test": "cross-env PORT=4000 NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --testTimeout=30000 --detectOpenHandles --testMatch='**/test/**/*.test.js' --coverage"
+    "test": "cross-env PORT=4000 NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --testTimeout=30000 --detectOpenHandles --testMatch='**/test/**/*.test.js' --coverage",
+    "test:unit": "jest --forceExit --testTimeout=30000 --detectOpenHandles --testMatch='**/test/unit-test/**/*.spec.js'"
   },
   "pre-commit": [
     "lint"
@@ -47,9 +48,14 @@
     "swagger-ui-express": "^4.3.0"
   },
   "devDependencies": {
+    "@babel/plugin-transform-regenerator": "^7.18.0",
+    "@babel/preset-env": "^7.18.2",
     "@babel/eslint-parser": "^7.17.0",
+    "@babel/plugin-transform-runtime": "^7.18.2",
+    "@cucumber/cucumber": "^8.2.2",
     "@faker-js/faker": "^6.0.0",
     "babel-eslint": "10.1.0",
+    "babel-jest": "^28.1.0",
     "cross-env": "^7.0.3",
     "eslint": "8.9.0",
     "eslint-config-prettier": "8.3.0",
@@ -61,6 +67,11 @@
     "supertest": "^6.1.6"
   },
   "jest": {
-    "transform": {}
+    "rootDir": ".",
+    "testEnvironment": "node",
+    "verbose": true,
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    }
   }
 }
