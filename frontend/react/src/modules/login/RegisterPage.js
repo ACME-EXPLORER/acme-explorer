@@ -111,7 +111,7 @@ export function RegisterPage () {
 
   return (
     state.loaded
-      ? <RegisterPageLoaded />
+      ? RegisterPageLoaded
       : <div className='loader' />
   );
 }
