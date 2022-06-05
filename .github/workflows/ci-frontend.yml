@@ -76,6 +76,8 @@ jobs:
           - run: docker-compose -f ./../../docker-compose.prd.yml up --build -d gateway
           - run: docker logs backend && sleep 20
           - run: docker logs backend
+          - run: docker exec backend ls
+          - run: docker exec backend cat .env
           - run: curl localhost/v1/trips
           - name: Cypress test
             run: npm run test:e2e
