@@ -53,7 +53,7 @@ export function AdminPage () {
   );
 
   return (state.loaded
-    ? <AdminPageLoaded />
+    ? AdminPageLoaded
     : <div className='loader' />);
 }
 

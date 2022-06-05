@@ -9,7 +9,7 @@ export function ListTrip ({ trips, onApply, className }) {
   );
   return (
     trips.length
-      ? <ListTripLoaded />
+      ? ListTripLoaded
       : <h3>No hay viajes actualmente.</h3>
   );
 }
