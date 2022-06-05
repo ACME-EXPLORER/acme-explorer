@@ -38,7 +38,7 @@ export function ConfirmationPage () {
   );
 
   return (state.loaded
-    ? <ConfirmationPageLoaded />
+    ? ConfirmationPageLoaded
     : <div className='loader' />);
 }
 

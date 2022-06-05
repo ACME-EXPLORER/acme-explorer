@@ -75,7 +75,7 @@ export function Dashboard () {
   );
 
   return (state.loaded
-    ? <DashboardLoaded />
+    ? DashboardLoaded
     : <div className='loader' />);
 }
 
