@@ -55,7 +55,7 @@ jobs:
 
       - run: npm ci
       - run: npm test
-      - run: npm test:unit
+      - run: npm run test:unit
       - run: npx cucumber-js
 
   build:
