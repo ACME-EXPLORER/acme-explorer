@@ -1,6 +1,3 @@
-// Generate Base Error cucumber step definitions
-// Language: javascript
-// Path: backend\features\support\base-error.steps.mjs
 import assert from 'assert';
 import { When, Then, Given } from '@cucumber/cucumber'
 import { BaseError } from '../../src/shared/errors/base-error.js'
