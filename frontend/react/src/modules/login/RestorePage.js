@@ -68,7 +68,7 @@ export function RestorePage () {
   );
 
   return (state.loaded
-    ? <RestorePageLoaded />
+    ? RestorePageLoaded
     : <div className='loader' />);
 }
 
