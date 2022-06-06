@@ -1,8 +1,11 @@
 import { BaseError } from './base-error.js';
+import { StatusCodes } from 'http-status-codes';
 
 export class RequestValidationError extends BaseError {
   constructor(errors) {
     super('Invalid request parameters');
+
+    this.errors = errors;
 
     this.code = StatusCodes.BAD_REQUEST;
 

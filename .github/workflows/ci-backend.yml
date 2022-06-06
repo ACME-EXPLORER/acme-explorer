@@ -55,6 +55,8 @@ jobs:
 
       - run: npm ci
       - run: npm test
+      - run: npm run test:unit
+      - run: npx cucumber-js
 
   build:
     name: Docker Build and Push
